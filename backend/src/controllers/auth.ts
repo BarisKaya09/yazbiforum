@@ -59,6 +59,7 @@ export const signup: express.Handler = async (req: express.Request, res: express
     return;
   }
 
+  const client = mongoClient(process.env.MONGODB_URI as string);
   try {
     // hash password
     const hashedPassword = await hashPassword(password, 10);
@@ -75,7 +76,6 @@ export const signup: express.Handler = async (req: express.Request, res: express
     };
 
     // db connectsion
-    const client = mongoClient(process.env.MONGODB_URI as string);
     const coll = client.db("yazbiforum").collection("users");
     if ((await coll.findOne({ nickname: user.nickname })) || (await coll.findOne({ email: user.email }))) {
       res.status(422).json({
@@ -93,6 +93,8 @@ export const signup: express.Handler = async (req: express.Request, res: express
   } catch (err) {
     res.status(400).json(anyError(err));
     return;
+  } finally {
+    await client.close();
   }
 
   res.status(200).json({ success: true, data: "Kayıt başarılı!" });
@@ -114,8 +116,8 @@ export const signin: express.Handler = async (req: express.Request, res: express
     return;
   }
 
+  const client = mongoClient(process.env.MONGODB_URI as string);
   try {
-    const client = mongoClient(process.env.MONGODB_URI as string);
     const coll = client.db("yazbiforum").collection("users");
     const user = await coll.findOne({ nickname: nickname });
 
@@ -141,6 +143,8 @@ export const signin: express.Handler = async (req: express.Request, res: express
   } catch (err) {
     res.status(400).json(anyError(err));
     return;
+  } finally {
+    await client.close();
   }
 
   res.status(200).json({ success: true, data: "Başarılı bir şekilde giriş yapıldı!" });

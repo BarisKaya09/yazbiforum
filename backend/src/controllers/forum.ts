@@ -125,8 +125,8 @@ export const createForum: express.Handler = async (req: express.Request, res: ex
   };
 
   const nickname = req.cookies.nickname as string;
+  const client = mongoClient(process.env.MONGODB_URI as string);
   try {
-    const client = mongoClient(process.env.MONGODB_URI as string);
     const coll = client.db("yazbiforum").collection("users");
     const user: RegisterBody | null = await coll.findOne<RegisterBody>({ nickname });
     if (user) await coll.updateOne({ nickname }, { $set: { forums: [...user.forums, userForum] } });
@@ -140,6 +140,8 @@ export const createForum: express.Handler = async (req: express.Request, res: ex
   } catch (err) {
     res.status(400).json(anyError(err));
     return;
+  } finally {
+    await client.close();
   }
   res.status(200).json({ success: true, data: "Forum başarılı bir şekilde eklendi." });
 };
@@ -156,8 +158,9 @@ export const likeForum: express.Handler = async (req: express.Request, res: expr
     });
     return;
   }
+
+  const client = mongoClient(process.env.MONGODB_URI as string);
   try {
-    const client = mongoClient(process.env.MONGODB_URI as string);
     const coll = client.db("yazbiforum").collection("users");
     const forumOwner: RegisterBody | null = await coll.findOne<RegisterBody>({ nickname: forumOwnerNickname });
     if (forumOwner) {
@@ -204,6 +207,8 @@ export const likeForum: express.Handler = async (req: express.Request, res: expr
   } catch (err) {
     res.status(400).json({ success: false, data: { error: { message: `Bir hata oluştu: ${err}`, code: err_codes.ANY_ERR } } });
     return;
+  } finally {
+    await client.close();
   }
   res.status(200).json({ success: true, data: "Forum Beğenildi" });
 };
@@ -219,8 +224,8 @@ export const deleteForum: express.Handler = async (req: express.Request, res: ex
   }
 
   const nickname = req.cookies.nickname as string;
+  const client = mongoClient(process.env.MONGODB_URI as string);
   try {
-    const client = mongoClient(process.env.MONGODB_URI as string);
     const coll = client.db("yazbiforum").collection("users");
     const user = await coll.findOne<RegisterBody>({ nickname });
     if (user) {
@@ -243,6 +248,8 @@ export const deleteForum: express.Handler = async (req: express.Request, res: ex
   } catch (err) {
     res.status(400).json(anyError(err));
     return;
+  } finally {
+    await client.close();
   }
 
   res.status(200).json({ success: true, data: "Forum Silindi." });
@@ -261,8 +268,8 @@ export const createComment: express.Handler = async (req: express.Request, res: 
     return;
   }
 
+  const client = mongoClient(process.env.MONGODB_URI as string);
   try {
-    const client = mongoClient(process.env.MONGODB_URI as string);
     const coll = client.db("yazbiforum").collection("users");
     const user: RegisterBody | null = await coll.findOne<RegisterBody>({ nickname: forumOwner });
     if (user) {
@@ -324,6 +331,8 @@ export const createComment: express.Handler = async (req: express.Request, res: 
   } catch (err) {
     res.status(400).json(anyError(err));
     return;
+  } finally {
+    await client.close();
   }
 
   res.status(200).json({ success: true, data: "Yorum eklendi." });
@@ -400,8 +409,8 @@ export const updateForum: express.Handler = async (req: express.Request, res: ex
   }
 
   const nickname = req.cookies.nickname;
+  const client = mongoClient(process.env.MONGODB_URI as string);
   try {
-    const client = mongoClient(process.env.MONGODB_URI as string);
     const coll = client.db("yazbiforum").collection("users");
     const user = await coll.findOne<RegisterBody>({ nickname });
     if (user) {
@@ -427,6 +436,8 @@ export const updateForum: express.Handler = async (req: express.Request, res: ex
   } catch (err) {
     res.status(400).json(anyError(err));
     return;
+  } finally {
+    await client.close();
   }
 
   res.status(200).json({ success: true, data: "Forum Güncellendi." });
