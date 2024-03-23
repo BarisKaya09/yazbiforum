@@ -3,13 +3,15 @@
 ##### Tartışma forumları, bilgi forumları ve soru forumları oluşturabileceğiniz yada başka kullanıcıların oluşturduğu forumları okuyup etkileşime girdiğiniz bir web sitesidir.
 
 ### Tartışma forumları
-    Tartışma forumlarında açılan konuda tartışabilirsiniz.
+> Tartışma forumlarında açılan konuda tartışabilirsiniz.
 
 ### Bilgi forumları
-    Bilgi forumları oluşturup, bilgilerini paylaşabilir yada başkalarının oluşturduğu bilgi forumlarından yararlanabilirsiniz.
+> Bilgi forumları oluşturup, bilgilerini paylaşabilir yada
+başkalarının oluşturduğu bilgi forumlarından yararlanabilirsiniz.
 
 ### Soru Forumları
-    Merak ettiğin veya insanların bilgilerinden faydalanmak istediğin konuları ile ilgili soru forumları oluşturabilirsin.
+> Merak ettiğin veya insanların bilgilerinden faydalanmak 
+istediğin konuları ile ilgili soru forumları oluşturabilirsin.
 
 ### Kurulum
 - Backend
