@@ -24,7 +24,8 @@
   npm install
   npm run dev
   ```
-    - .env dosyası ekle
+
+  - .env dosyası ekle ve kendi PORT, MONGODB_URI ve JWT_SECRET env değişkenlerini oluştur.
 
 - Frontend
   ```shell
@@ -32,7 +33,7 @@
   npm run dev
   .env dosyası ekle
   ```
-    - .env dosyası ekle
+  - .env dosyası ekle ve backend endpointleri için için env değişkenlerini oluştur.
 
 ### Teknolojiler
 
