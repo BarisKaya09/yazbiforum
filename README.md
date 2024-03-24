@@ -31,7 +31,6 @@
   ```shell
   npm install
   npm run dev
-  .env dosyası ekle
   ```
   - .env dosyası ekle ve backend endpointleri için için env değişkenlerini oluştur.
 
