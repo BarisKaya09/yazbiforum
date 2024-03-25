@@ -110,7 +110,7 @@ export const getForumById: express.Handler = async (req: express.Request, res: e
       });
       return;
     }
-    res.status(200).json({ success: true, data: forum });
+    res.status(200).json({ success: true, data: { nickname: req.cookies.nickname as string, forum } });
   } catch (err) {
     res.status(402).json(anyError(err));
   } finally {
