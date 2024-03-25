@@ -4,14 +4,7 @@ import { Colors } from "../../../types";
 import LoadAnimate from "../../LoadAnimate";
 import { NavLink } from "react-router-dom";
 import Icon from "../../ui/Icon";
-import {
-  faPlus,
-  faChevronDown,
-  faChevronUp,
-  IconDefinition,
-  faTrash,
-  faPenToSquare,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faChevronDown, faChevronUp, IconDefinition, faTrash, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState, useRef } from "react";
 import { getTags, filterForumByTags, filterForumByType, getAccountData } from "../../../utils";
 import ForumService from "../../../services/ForumService";
@@ -240,10 +233,7 @@ const MyForums: React.FC<IProps> = ({ forums }) => {
                           className="w-full min-h-[100px] relative py-5 flex gap-3 flex-col pl-5 pr-5 border border-[#161c32] rounded-md mb-5 select-none cursor-pointer hover:opacity-80 duration-300"
                         >
                           <div className="absolute -top-3 -right-5 flex gap-2">
-                            <button
-                              className="w-6 h-6 bg-rose-500 text-sm text-slate-200"
-                              onClick={() => deleteForum(forum._id)}
-                            >
+                            <button className="w-6 h-6 bg-rose-500 text-sm text-slate-200" onClick={() => deleteForum(forum._id)}>
                               <Icon icon_={faTrash} />
                             </button>
                             <button className="w-10 h-6 bg-teal-700 text-sm  text-slate-200">
@@ -264,14 +254,13 @@ const MyForums: React.FC<IProps> = ({ forums }) => {
                           </div>
 
                           <div className="w-full h-[70%] whitespace-pre-wrap">
-                            {forum.content.length < 2000
-                              ? forum.content.slice(0, 2000)
-                              : forum.content.slice(0, 2000) + " (...)"}
+                            {forum.content.length < 2000 ? forum.content.slice(0, 2000) : forum.content.slice(0, 2000) + " (...)"}
                           </div>
 
                           <div className="w-full h-[10%] flex justify-between py-1">
-                            <div className="w-2/3 h-full flex gap-2">
+                            <div className="w-4/5 h-full flex gap-2">
                               <div className="h-full text-sm text-rose-500 pt-[2px]">{forum.author}</div>
+                              {/* <div className="w-[100px] h-[22px] flex gap-2 overflow-scroll"> */}
                               {Array.isArray(forum.tag) ? (
                                 forum.tag.map((t) => (
                                   <div className="min-w-[60px] h-[22px] px-2 cursor-pointer bg-indigo-700 text-sm text-center rounded-sm leading-5">
@@ -283,16 +272,15 @@ const MyForums: React.FC<IProps> = ({ forums }) => {
                                   {forum.tag}
                                 </div>
                               )}
+                              {/* </div> */}
                               <div className="h-full text-sm pt-[2px]">
                                 Son güncelleme {forum.lastUpdate.length == 0 ? "yok" : forum.lastUpdate}
                               </div>
                               <div className="h-full text-sm text-slate-300 pt-[2px]">{forum.likes} Beğeni</div>
-                              <div className="h-full text-sm text-slate-300 pt-[2px]">
-                                {forum.comments.length} Yorum
-                              </div>
+                              <div className="h-full text-sm text-slate-300 pt-[2px]">{forum.comments.length} Yorum</div>
                             </div>
 
-                            <div className="w-1/3 text-right pt-[2px]">{forum.releaseDate}</div>
+                            <div className="w-1/5 text-right pt-[2px]">{forum.releaseDate}</div>
                           </div>
                         </div>
                       </LoadAnimate>
