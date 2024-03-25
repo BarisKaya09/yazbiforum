@@ -21,7 +21,10 @@ export type ForumBody = {
   releaseDate: string;
   lastUpdate: string;
   comments: CommentBody[];
-  likes: number;
+  likes: {
+    count: number;
+    users: string[];
+  };
 };
 
 export type Tags =
@@ -121,7 +124,10 @@ export const createForum: express.Handler = async (req: express.Request, res: ex
     releaseDate: date.toLocaleString(),
     lastUpdate: "",
     comments: [],
-    likes: 0,
+    likes: {
+      count: 0,
+      users: [],
+    },
   };
 
   const nickname = req.cookies.nickname as string;
@@ -166,7 +172,16 @@ export const likeForum: express.Handler = async (req: express.Request, res: expr
     if (forumOwner) {
       const userForum: ForumBody | undefined = forumOwner.forums.find((i) => i._id == _id);
       if (userForum) {
-        userForum.likes += 1;
+        // kullanıcı forumu beğenmişse hata döndür ve return et
+        if (userForum.likes.users.includes(nickname)) {
+          res.status(402).json({
+            success: false,
+            data: { error: { message: "Bu forumu zaten beğendiniz.", code: err_codes.ALL_READY_LIKED } },
+          });
+          return;
+        }
+        userForum.likes.count += 1;
+        userForum.likes.users.push(nickname);
         const newUserForums = forumOwner.forums.filter((i) => i._id != _id);
         newUserForums.push(userForum);
 
