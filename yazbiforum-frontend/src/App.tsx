@@ -2,9 +2,9 @@ import { useRef, useEffect } from "react";
 import Navbar from "./components/app/Navbar";
 import { Colors } from "./types";
 
-interface IProps {
+type IProps = {
   children: any;
-}
+};
 
 const App: React.FC<IProps> = ({ children }) => {
   const navRef = useRef<HTMLDivElement | null>(null);

@@ -12,10 +12,10 @@ import { toast } from "react-toastify";
 
 import AuthService from "../../services/AuthService";
 
-interface LoginBody {
+type LoginBody = {
   nickname: string;
   password: string;
-}
+};
 
 const Form: React.FC = () => {
   const nicknameRef = useRef<HTMLInputElement>();

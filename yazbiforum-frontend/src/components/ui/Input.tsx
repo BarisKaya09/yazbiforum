@@ -1,11 +1,11 @@
 import React, { forwardRef } from "react";
 import { Colors } from "../../types";
 
-interface IProps {
+type IProps = {
   type: string;
   placeholder?: string;
   name: string;
-}
+};
 
 const Input = forwardRef(({ type, placeholder, name }: IProps, ref: any) => {
   return (

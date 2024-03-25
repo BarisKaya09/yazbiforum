@@ -13,14 +13,14 @@ import "react-toastify/dist/ReactToastify.css";
 
 import AuthService from "../../services/AuthService";
 
-interface RegisterBody {
+type RegisterBody = {
   name: string;
   surname: string;
   age: string;
   nickname: string;
   email: string;
   password: string;
-}
+};
 
 const Form: React.FC = () => {
   const nameRef = useRef<HTMLInputElement | any>();

@@ -100,10 +100,10 @@ export const signup: express.Handler = async (req: express.Request, res: express
   res.status(200).json({ success: true, data: "Kayıt başarılı!" });
 };
 
-export interface LoginBody {
+export type LoginBody = {
   nickname: string;
   password: string;
-}
+};
 
 export const signin: express.Handler = async (req: express.Request, res: express.Response) => {
   const { nickname, password }: LoginBody = req.body as LoginBody;

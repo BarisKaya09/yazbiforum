@@ -2,11 +2,11 @@ import React, { useEffect, useRef } from "react";
 import { type LoadAnimates } from "../types";
 import { loadAnimate } from "../utils";
 
-interface IProps {
+type IProps = {
   children: any;
   atype: LoadAnimates;
   duration?: number;
-}
+};
 
 const LoadAnimate: React.FC<IProps> = ({ children, atype, duration }) => {
   const ref = useRef(null);

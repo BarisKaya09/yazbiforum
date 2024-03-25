@@ -353,12 +353,12 @@ export const createComment: express.Handler = async (req: express.Request, res: 
   res.status(200).json({ success: true, data: "Yorum eklendi." });
 };
 
-interface UpdateForumBody {
+type UpdateForumBody = {
   tag: Tags | Tags[];
   title: string;
   content: string;
   type_: ForumTypes;
-}
+};
 
 export const updateForum: express.Handler = async (req: express.Request, res: express.Response) => {
   const _id = req.params._id;

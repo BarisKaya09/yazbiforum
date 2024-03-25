@@ -1,13 +1,13 @@
 import React from "react";
 import { Colors } from "../../types";
 
-interface IProps {
+type IProps = {
   children: any;
   onClick: React.MouseEventHandler;
   height?: string;
   style?: { [key: string]: string };
   disabled?: boolean;
-}
+};
 
 const Button: React.FC<IProps> = ({ children, onClick, height, style, disabled }) => {
   return (

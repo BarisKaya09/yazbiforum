@@ -5,10 +5,10 @@ import { faWpforms } from "@fortawesome/free-brands-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import AuthService from "../../services/AuthService";
 
-interface IProps {
+type IProps = {
   bg: string;
   nickname: string | undefined;
-}
+};
 
 const Sidebar: React.FC<IProps> = ({ bg, nickname }) => {
   const logout = async () => {
