@@ -276,7 +276,7 @@ const MyForums: React.FC<IProps> = ({ forums }) => {
                               <div className="h-full text-sm pt-[2px]">
                                 Son güncelleme {forum.lastUpdate.length == 0 ? "yok" : forum.lastUpdate}
                               </div>
-                              <div className="h-full text-sm text-slate-300 pt-[2px]">{forum.likes} Beğeni</div>
+                              <div className="h-full text-sm text-slate-300 pt-[2px]">{forum.likes.count} Beğeni</div>
                               <div className="h-full text-sm text-slate-300 pt-[2px]">{forum.comments.length} Yorum</div>
                             </div>
 
