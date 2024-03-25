@@ -176,7 +176,7 @@ export const likeForum: express.Handler = async (req: express.Request, res: expr
         if (userForum.likes.users.includes(nickname)) {
           res.status(402).json({
             success: false,
-            data: { error: { message: "Bu forumu zaten beğendiniz.", code: err_codes.ALL_READY_LIKED } },
+            data: { error: { message: "Bu forumu zaten beğendiniz.", code: err_codes.ALREADY_LIKED } },
           });
           return;
         }
