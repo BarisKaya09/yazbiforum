@@ -13,7 +13,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setFilterByTags, setFilterByType }) =
   useEffect(() => {
     (async () => setTags((await getTags()).map((x) => x.tag_name)))();
   }, []);
-
+  // TODO: taglara göre filtrelemede bug var.
   return (
     <div className="w-[20%] h-[650px]">
       <LoadAnimate atype="left-to-right" duration={400}>
