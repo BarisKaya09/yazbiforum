@@ -88,9 +88,7 @@ const ForumsBody: React.FC<ForumsBodyProps> = ({ userForums, searching }) => {
                     </div>
 
                     <div className="w-full h-[70%]">
-                      {forum.content.length > 2000
-                        ? forum.content.slice(0, 2500) + "(...)"
-                        : forum.content.slice(0, 2500)}
+                      {forum.content.length > 2000 ? forum.content.slice(0, 2500) + "(...)" : forum.content.slice(0, 2500)}
                     </div>
 
                     <div className="w-full h-[10%] flex justify-between py-1">
@@ -110,7 +108,7 @@ const ForumsBody: React.FC<ForumsBodyProps> = ({ userForums, searching }) => {
                         <div className="h-full text-sm pt-[2px]">
                           Son güncelleme {forum.lastUpdate.length == 0 ? "yok" : forum.lastUpdate}
                         </div>
-                        <div className="h-full text-sm text-teal-500 pt-[2px]">{forum.likes} Beğeni</div>
+                        <div className="h-full text-sm text-teal-500 pt-[2px]">{forum.likes.count} Beğeni</div>
                         <div className="h-full text-sm text-teal-500 pt-[2px]">{forum.comments.length} Yorum</div>
                       </div>
 

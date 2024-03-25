@@ -33,7 +33,10 @@ export type ForumBody = {
   releaseDate: string;
   lastUpdate: string;
   comments: CommentBody[];
-  likes: number;
+  likes: {
+    count: number;
+    users: string[];
+  };
 };
 
 export type OPForumBody = {

@@ -26,4 +26,7 @@ export enum err_codes {
 
   // account
   NO_CHANGES_WERE_MADE = "NO_CHANGES_WERE_MADE",
+
+  // likes
+  ALREADY_LIKED = "ALL_READY_LIKED",
 }

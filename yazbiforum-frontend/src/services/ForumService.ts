@@ -15,8 +15,7 @@ export default class ForumService {
   private static readonly create_comment_endpoint: string = import.meta.env.VITE_CREATE_COMMENT_ENDPOINT;
   private static readonly update_forum_endpoint: string = import.meta.env.VITE_UPDATE_FORUM_ENDPOINT;
   private static readonly get_all_forums_endpoint: string = import.meta.env.VITE_GET_ALL_FORUMS_ENDPOINT;
-  private static readonly get_forum_count_by_tags_endpoint: string = import.meta.env
-    .VITE_GET_FORUM_COUNT_BY_TAGS_ENDPOINT;
+  private static readonly get_forum_count_by_tags_endpoint: string = import.meta.env.VITE_GET_FORUM_COUNT_BY_TAGS_ENDPOINT;
   private static readonly get_total_likes_endpoint: string = import.meta.env.VITE_GET_TOTAL_LIKES_ENDPOINT;
   private static readonly get_forum_by_id_endpoint: string = import.meta.env.VITE_GET_FORUM_BY_ID_ENDPOINT;
   private static readonly get_user_forum_by_id_endpoint: string = import.meta.env.VITE_GET_USER_FORUM_BY_ID_ENDPOINT;
@@ -25,13 +24,9 @@ export default class ForumService {
 
   static async createForum(forum: OPForumBody): Promise<SuccessResponse<string> | UnsuccessfulResponse> {
     try {
-      const { data } = await axios.post<SuccessResponse<string> | UnsuccessfulResponse>(
-        this.create_forum_endpoint,
-        forum,
-        {
-          withCredentials: true,
-        }
-      );
+      const { data } = await axios.post<SuccessResponse<string> | UnsuccessfulResponse>(this.create_forum_endpoint, forum, {
+        withCredentials: true,
+      });
 
       return {
         success: true,
@@ -180,16 +175,19 @@ export default class ForumService {
     }
   }
 
-  static async getForumById(author: string, id: string): Promise<SuccessResponse<ForumBody>> {
+  static async getForumById(author: string, id: string): Promise<SuccessResponse<{ nickname: string; forum: ForumBody }>> {
     try {
-      const { data } = await axios.get<SuccessResponse<ForumBody>>(this.get_forum_by_id_endpoint + author + "/" + id, {
-        withCredentials: true,
-      });
+      const { data } = await axios.get<SuccessResponse<{ nickname: string; forum: ForumBody }>>(
+        this.get_forum_by_id_endpoint + author + "/" + id,
+        {
+          withCredentials: true,
+        }
+      );
 
       return {
         success: true,
-        data: data.data,
-      } as SuccessResponse<ForumBody>;
+        data: { nickname: data.data.nickname, forum: data.data.forum },
+      } as SuccessResponse<{ nickname: string; forum: ForumBody }>;
     } catch (err: any) {
       throw err.response.data;
     }

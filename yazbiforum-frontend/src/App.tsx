@@ -29,7 +29,7 @@ const App: React.FC<IProps> = ({ children }) => {
         );
       }
     });
-  });
+  }, []);
   return (
     <>
       <div className="w-full bg-[#f8f4ec] duration-300" ref={navRef}>

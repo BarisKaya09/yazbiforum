@@ -1,14 +1,15 @@
 import { useEffect, useState, useRef } from "react";
-import { CommentBody, type ForumBody } from "../../types";
+import { type ForumBody } from "../../types";
 import PageTitle from "../ui/PageTitle";
 import Icon from "../ui/Icon";
-import { faThumbsUp, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faThumbsUp, faUser } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import ForumService from "../../services/ForumService";
 
 const Forum: React.FC = () => {
   const [forumAuthorAndId, setForumAuthorAndId] = useState<string[]>();
   const [forum, setForum] = useState<ForumBody>();
+  const [alreadyLiked, setAlreadyLiked] = useState<boolean>(false);
 
   useEffect(() => {
     const href = window.location.href.split("/");
@@ -20,7 +21,10 @@ const Forum: React.FC = () => {
       if (!forumAuthorAndId) return;
       const data = await ForumService.getForumById(forumAuthorAndId[0], forumAuthorAndId[1]);
       if (data.success) {
-        setForum(data.data);
+        setForum(data.data.forum);
+
+        if (data.data.forum.likes.users.includes(data.data.nickname)) setAlreadyLiked(true);
+        else setAlreadyLiked(false);
       }
     } catch (err: any) {
       throw err;
@@ -95,11 +99,17 @@ const Forum: React.FC = () => {
 
         <div className="w-[100px] h-1/3 flex border border-slate-500 rounded-md">
           <div className="w-[60%] h-full text-center leading-6 border-r border-slate-500 text-xs px-1 select-none">
-            {forum?.likes} beğeni
+            {forum?.likes.count} beğeni
           </div>
-          <button className="w-[40%] h-full text-center hover:bg-slate-500 duration-300" onClick={likeForum}>
-            <Icon icon_={faThumbsUp} />
-          </button>
+          {alreadyLiked ? (
+            <button className="w-[40%] h-full text-center hover:bg-slate-500 duration-300">
+              <Icon icon_={faBan} />
+            </button>
+          ) : (
+            <button className="w-[40%] h-full text-center hover:bg-slate-500 duration-300" onClick={likeForum}>
+              <Icon icon_={faThumbsUp} />
+            </button>
+          )}
         </div>
       </div>
 

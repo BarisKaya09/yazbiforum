@@ -78,7 +78,7 @@ export const getTotalLikes: express.Handler = async (req: express.Request, res: 
   try {
     let totalLikes: number = 0;
     const coll = client.db("yazbiforum").collection("users");
-    (await coll.find<RegisterBody>({ nickname }).toArray()).map((x) => x.forums)[0].forEach((x) => (totalLikes += x.likes));
+    (await coll.find<RegisterBody>({ nickname }).toArray()).map((x) => x.forums)[0].forEach((x) => (totalLikes += x.likes.count));
 
     res.status(200).json({ success: true, data: totalLikes });
   } catch (err) {
@@ -110,7 +110,7 @@ export const getForumById: express.Handler = async (req: express.Request, res: e
       });
       return;
     }
-    res.status(200).json({ success: true, data: forum });
+    res.status(200).json({ success: true, data: { nickname: req.cookies.nickname as string, forum } });
   } catch (err) {
     res.status(402).json(anyError(err));
   } finally {
