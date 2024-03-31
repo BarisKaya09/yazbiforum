@@ -3,10 +3,14 @@ package api
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/BarisKaya09/YazBiForum/backend/api/handlers"
+	"github.com/fatih/color"
 )
 
 type Server struct {
 	listenaddr string
+	mux        *http.ServeMux
 }
 
 func NewServer(listenaddr string) *Server {
@@ -14,11 +18,13 @@ func NewServer(listenaddr string) *Server {
 }
 
 func (s *Server) Start() error {
-	fmt.Printf("Server %+v portunda başlatıldı: http://localhost:%v", s.listenaddr, s.listenaddr)
+	color := color.New(color.BgRed).Add(color.FgHiWhite)
+	color.Printf("Server %+v portunda başlatıldı: http://localhost:%v", s.listenaddr, s.listenaddr)
 	mux := http.NewServeMux()
+	s.mux = mux
 	s.allRoutes()
 	if err := http.ListenAndServe(s.listenaddr, mux); err != nil {
-		return fmt.Errorf("[ Starting Error ]: %v", err)
+		return fmt.Errorf(color.Sprintf("[ Starting Error ]: %v", err))
 	}
 	return nil
 }
@@ -26,12 +32,20 @@ func (s *Server) Start() error {
 func (s *Server) allRoutes() {
 	s.authRoutes()
 	s.forumRoutes()
+	s.accountRoutes()
 }
 
 func (s *Server) authRoutes() {
-	// mux.HandleFunc("GET /hello", handler.hello)
+	s.mux.HandleFunc("POST /signup", handlers.Signup)
+	s.mux.HandleFunc("POST /signin", handlers.Signin)
+	s.mux.HandleFunc("POST /logout", handlers.Logout)
+	s.mux.HandleFunc("GET /isLoggedin", handlers.IsLoggedin)
 }
 
 func (s *Server) forumRoutes() {
+	// mux.HandleFunc("GET /hello", handler.hello)
+}
+
+func (s *Server) accountRoutes() {
 	// mux.HandleFunc("GET /hello", handler.hello)
 }
