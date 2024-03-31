@@ -10,11 +10,6 @@ import ForumService from "../../services/ForumService";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import Icon from "../ui/Icon";
 
-// tag":
-//"title":
-//"content":
-//"type_":
-
 type TitleInputProps = {
   setTitle: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
