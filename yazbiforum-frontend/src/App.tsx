@@ -1,7 +1,6 @@
 import { useRef, useEffect } from "react";
 import Navbar from "./components/app/Navbar";
 import { Colors } from "./types";
-
 type IProps = {
   children: any;
 };
