@@ -19,12 +19,12 @@ func NewServer(listenaddr string) *Server {
 
 func (s *Server) Start() error {
 	color := color.New(color.BgRed).Add(color.FgHiWhite)
-	color.Printf("Server %+v portunda başlatıldı: http://localhost:%v", s.listenaddr, s.listenaddr)
+	color.Printf("Server %+v portunda başlatıldı: http://localhost:%v\n", s.listenaddr, s.listenaddr)
 	mux := http.NewServeMux()
 	s.mux = mux
 	s.allRoutes()
 	if err := http.ListenAndServe(s.listenaddr, mux); err != nil {
-		return fmt.Errorf(color.Sprintf("[ Starting Error ]: %v", err))
+		return fmt.Errorf(color.Sprintf("[ Starting Error ]: %v\n", err))
 	}
 	return nil
 }

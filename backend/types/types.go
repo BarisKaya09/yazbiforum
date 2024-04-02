@@ -7,7 +7,7 @@ type User struct {
 	Nickname     string       `json:"nickname"`
 	Email        string       `json:"email"`
 	Password     string       `json:"password"`
-	Forums       any          `json:"forums"`
+	Forums       []Forum      `json:"forums"`
 	Interactions Interactions `json:"interactions"`
 	// kullanıcının etkileşim kurduğu forumların id bilgilerinin tutulacağı yer.(beğendiği forum, yorum yaptığı forum)
 }
@@ -105,4 +105,30 @@ const (
 type Likes struct {
 	Count int64    `json:"count"`
 	Users []string `json:"users"`
+}
+
+type Err_Codes string
+
+const (
+	MISSING_CONTENT         Err_Codes = "MISSING_CONTENT"
+	READ_ERROR              Err_Codes = "READ_ERROR"
+	DATABASE_ERROR          Err_Codes = "DATABASE_ERROR"
+	ANY_ERROR               Err_Codes = "ANY_ERROR"
+	INVALID_PASSWORD_LENGTH Err_Codes = "INVALID_PASSWORD_LENGTH "
+	INVALID_EMAIL_FORMAT    Err_Codes = "INVALID_EMAIL_FORMAT "
+)
+
+type UnsuccessResponse struct {
+	Success      bool      `json:"success"`
+	ErrorMessage string    `json:"error"`
+	Code         Err_Codes `json:"code"`
+}
+
+func (e *UnsuccessResponse) Error() string {
+	return e.ErrorMessage
+}
+
+type Response struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
 }

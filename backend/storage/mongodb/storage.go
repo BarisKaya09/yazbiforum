@@ -3,7 +3,7 @@ package mongodb
 import (
 	"context"
 
-	types "github.com/BarisKaya09/YazBiForum/backend"
+	"github.com/BarisKaya09/YazBiForum/backend/types"
 	"github.com/fatih/color"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -29,7 +29,7 @@ func (ms *MongoDBStorage) Connect(uri string) error {
 		return err
 	}
 	color := color.New(color.BgCyan).Add(color.FgHiBlack)
-	color.Println("MongoDB connected.")
+	color.Println("--- MongoDB connected. ---")
 	ms.client = client
 	return nil
 }
@@ -38,8 +38,8 @@ func (ms *MongoDBStorage) Disconnect() error {
 	if err := ms.client.Disconnect(context.TODO()); err != nil {
 		return err
 	}
-	color := color.New(color.BgCyan).Add(color.FgHiBlack)
-	color.Println("MongoDB disconnected.")
+	color := color.New(color.BgHiMagenta).Add(color.FgHiBlack)
+	color.Println("--- MongoDB disconnected. ---")
 	return nil
 }
 
