@@ -36,10 +36,10 @@ func (s *Server) allRoutes() {
 }
 
 func (s *Server) authRoutes() {
-	s.mux.HandleFunc("POST /signup", handlers.Signup)
-	s.mux.HandleFunc("POST /signin", handlers.Signin)
-	s.mux.HandleFunc("POST /logout", handlers.Logout)
-	s.mux.HandleFunc("GET /isLoggedin", handlers.IsLoggedin)
+	s.mux.HandleFunc("POST /auth/signup", handlers.Signup)
+	s.mux.HandleFunc("POST /auth/signin", handlers.Signin)
+	s.mux.HandleFunc("POST /auth/logout", handlers.Logout)
+	s.mux.HandleFunc("GET /auth/isLoggedin", handlers.IsLoggedin)
 }
 
 func (s *Server) forumRoutes() {
