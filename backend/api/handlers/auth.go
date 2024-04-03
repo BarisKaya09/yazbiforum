@@ -95,7 +95,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	tools.WriteJSON(w, types.Response{Success: true, Message: "Kullanıcı başarılı bir şekilde eklendi."})
 }
 func Signin(w http.ResponseWriter, r *http.Request) {
-
+	
 }
 func Logout(w http.ResponseWriter, r *http.Request) {
 
