@@ -110,12 +110,23 @@ type Likes struct {
 type Err_Codes string
 
 const (
-	MISSING_CONTENT         Err_Codes = "MISSING_CONTENT"
-	READ_ERROR              Err_Codes = "READ_ERROR"
-	DATABASE_ERROR          Err_Codes = "DATABASE_ERROR"
-	ANY_ERROR               Err_Codes = "ANY_ERROR"
+	MISSING_CONTENT Err_Codes = "MISSING_CONTENT"
+	READ_ERROR      Err_Codes = "READ_ERROR"
+
+	DATABASE_ERROR Err_Codes = "DATABASE_ERROR"
+	JWT_ERROR      Err_Codes = "JWT_ERROR"
+
+	ANY_ERROR Err_Codes = "ANY_ERROR"
+
 	INVALID_PASSWORD_LENGTH Err_Codes = "INVALID_PASSWORD_LENGTH "
 	INVALID_EMAIL_FORMAT    Err_Codes = "INVALID_EMAIL_FORMAT "
+
+	USER_EXIST     Err_Codes = "USER_EXIST"
+	USER_NOT_EXIST Err_Codes = "USER_NOT_EXIST"
+
+	WRONG_PASSWORD Err_Codes = "WRONG_PASSWORD"
+
+	UNAUTHORIZED Err_Codes = "UNAUTHORIZED"
 )
 
 type UnsuccessResponse struct {
@@ -131,4 +142,12 @@ func (e *UnsuccessResponse) Error() string {
 type Response struct {
 	Success bool   `json:"success"`
 	Message string `json:"message"`
+}
+
+type CustomError struct {
+	Message string
+}
+
+func (err CustomError) Error() string {
+	return err.Message
 }

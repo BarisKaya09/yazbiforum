@@ -50,3 +50,11 @@ func (ms *MongoDBStorage) InsertUser(user types.User) error {
 	}
 	return nil
 }
+
+func (ms *MongoDBStorage) FindOne(filter any, result *types.User) error {
+	coll := ms.client.Database("yazbiforum").Collection("users")
+	if err := coll.FindOne(context.TODO(), filter).Decode(&result); err != nil {
+		return err
+	}
+	return nil
+}
