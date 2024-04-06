@@ -24,6 +24,7 @@ type CreateForumBody struct {
 }
 
 func CreateForum(w http.ResponseWriter, r *http.Request) {
+	t := time.Now()
 	w.Header().Add("content-type", "aplication/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Accept", "application/json")
@@ -34,6 +35,7 @@ func CreateForum(w http.ResponseWriter, r *http.Request) {
 		tools.WriteReadError(w)
 		return
 	}
+	defer r.Body.Close()
 
 	if len(body.Tag) == 0 || body.Title == "" || body.Content == "" || body.Type_ == "" {
 		tools.WriteJSON(w, types.UnsuccessResponse{Success: false, ErrorMessage: "Eksik forum bilgisi gönderildi!", Code: types.MISSING_CONTENT}, http.StatusBadRequest)
@@ -117,6 +119,7 @@ func CreateForum(w http.ResponseWriter, r *http.Request) {
 		tools.WriteJSON(w, types.UnsuccessResponse{Success: false, ErrorMessage: "Forum eklenirken beklenmedik bir hata oluştu!", Code: types.ANY_ERROR}, http.StatusInternalServerError)
 		return
 	}
+	fmt.Println(time.Since(t))
 	tools.WriteJSON(w, types.Response{Success: true, Message: "Forum başarılı bir şekilde eklendi1"}, http.StatusOK)
 }
 
