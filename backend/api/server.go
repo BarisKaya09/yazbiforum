@@ -37,14 +37,19 @@ func (s *Server) allRoutes() {
 }
 
 func (s *Server) authRoutes() {
-	s.mux.HandleFunc("POST /auth/signup", handlers.Signup)
-	s.mux.HandleFunc("POST /auth/signin", handlers.Signin)
-	s.mux.HandleFunc("POST /auth/logout", middlewares.RequireAuth(handlers.Logout))
-	s.mux.HandleFunc("GET /auth/isLoggedin", middlewares.RequireAuth(handlers.IsLoggedin))
+	s.mux.HandleFunc("POST /api/auth/signup", handlers.Signup)
+	s.mux.HandleFunc("POST /api/auth/signin", handlers.Signin)
+	s.mux.HandleFunc("POST /api/auth/logout", middlewares.RequireAuth(handlers.Logout))
+	s.mux.HandleFunc("GET /api/auth/isLoggedin", middlewares.RequireAuth(handlers.IsLoggedin))
 }
 
 func (s *Server) forumRoutes() {
-	// mux.HandleFunc("GET /hello", handler.hello)
+	s.mux.HandleFunc("POST /api/auth/createForum", middlewares.RequireAuth(handlers.CreateForum))
+	s.mux.HandleFunc("POST /api/forum/likeForum/:/:_id", middlewares.RequireAuth(handlers.LikedForum))
+	s.mux.HandleFunc("POST /api/forum/deleteForum/:", middlewares.RequireAuth(handlers.DeleteForum))
+	s.mux.HandleFunc("POST /api/forum/createComment/:/:_id", middlewares.RequireAuth(handlers.CreateComment))
+	s.mux.HandleFunc("POST /api/forum/updateForum/:", middlewares.RequireAuth(handlers.UpdateForum))
+	s.mux.HandleFunc("GET /api/forum/getTags", middlewares.RequireAuth(handlers.GetTags))
 }
 
 func (s *Server) accountRoutes() {

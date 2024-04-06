@@ -2,7 +2,6 @@ package mongodb
 
 import (
 	"context"
-	"errors"
 
 	"github.com/BarisKaya09/YazBiForum/backend/types"
 	"github.com/fatih/color"
@@ -69,7 +68,7 @@ func (ms *MongoDBStorage) InsertForum(user *types.User, forum types.Forum) error
 	filter := bson.D{{Key: "nickname", Value: user.Nickname}}
 	update := bson.D{{Key: "$set", Value: bson.D{{Key: "forums", Value: user.Forums}}}}
 	if _, err := coll.UpdateOne(context.TODO(), filter, update); err != nil {
-		return errors.New("forum eklenirken bir hata oluştu")
+		return err
 	}
 	return nil
 }

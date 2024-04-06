@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"os"
 	"time"
 
@@ -28,7 +29,7 @@ type RegisterBody struct {
 func Signup(w http.ResponseWriter, r *http.Request) {
 	var body RegisterBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		tools.WriteJSON(w, types.UnsuccessResponse{Success: false, ErrorMessage: "Gövde okunurken bir hata oluştu.", Code: types.READ_ERROR}, http.StatusInternalServerError)
+		tools.WriteReadError(w)
 		return
 	}
 	defer r.Body.Close()
@@ -56,23 +57,23 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 
 	storage := mongodb.NewMongoDBStorage()
 	if err := storage.Connect(os.Getenv("MONGODB_URI")); err != nil {
-		tools.WriteJSON(w, types.UnsuccessResponse{Success: false, ErrorMessage: fmt.Sprintf("[ MongoDB ]: %v", err), Code: types.DATABASE_ERROR}, http.StatusBadRequest)
+		tools.WriteStorageConnectError(w, err)
 		return
 	}
 	defer func() {
 		if err := storage.Disconnect(); err != nil {
-			tools.WriteJSON(w, types.UnsuccessResponse{Success: false, ErrorMessage: fmt.Sprintf("[ MongoDB ]: %v", err), Code: types.DATABASE_ERROR}, http.StatusBadRequest)
+			tools.WriteStorageDisconnectError(w, err)
 			return
 		}
 	}()
 
 	// eğer kullanıcı adı ve email adresi alınmışsa hata döndür
 	var result types.User
-	if err := storage.FindOne(bson.D{{"nickname", body.Nickname}}, &result); err == nil {
+	if err := storage.FindOne(bson.D{{Key: "nickname", Value: body.Nickname}}, &result); err == nil {
 		tools.WriteJSON(w, types.UnsuccessResponse{Success: false, ErrorMessage: "Bu kullanıcı adı kayıtlı!", Code: types.USER_EXIST}, http.StatusBadRequest)
 		return
 	}
-	if err := storage.FindOne(bson.D{{"email", body.Email}}, &result); err == nil {
+	if err := storage.FindOne(bson.D{{Key: "email", Value: body.Email}}, &result); err == nil {
 		w.WriteHeader(http.StatusBadRequest)
 		tools.WriteJSON(w, types.UnsuccessResponse{Success: false, ErrorMessage: "Bu email adresi kayıtlı!", Code: types.USER_EXIST}, http.StatusBadRequest)
 		return
@@ -111,7 +112,7 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 	var body LoginBody
 	// read body
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		tools.WriteJSON(w, types.UnsuccessResponse{Success: false, ErrorMessage: "Gövde okunurken bir hata oluştu.", Code: types.READ_ERROR}, http.StatusInternalServerError)
+		tools.WriteReadError(w)
 		return
 	}
 
@@ -122,20 +123,20 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 
 	storage := mongodb.NewMongoDBStorage()
 	if err := storage.Connect(os.Getenv("MONGODB_URI")); err != nil {
-		tools.WriteJSON(w, types.UnsuccessResponse{Success: false, ErrorMessage: fmt.Sprintf("[ MongoDB ]: %v", err), Code: types.DATABASE_ERROR}, http.StatusBadRequest)
+		tools.WriteStorageConnectError(w, err)
 		return
 	}
 
 	defer func() {
 		if err := storage.Disconnect(); err != nil {
-			tools.WriteJSON(w, types.UnsuccessResponse{Success: false, ErrorMessage: fmt.Sprintf("[ MongoDB ]: %v", err), Code: types.DATABASE_ERROR}, http.StatusBadRequest)
+			tools.WriteStorageDisconnectError(w, err)
 			return
 		}
 	}()
 
 	// kullanıcı bulunmuyorsa hata döndür
 	var result types.User
-	if err := storage.FindOne(bson.D{{"nickname", body.Nickname}}, &result); err != nil {
+	if err := storage.FindOne(bson.D{{Key: "nickname", Value: body.Nickname}}, &result); err != nil {
 		if err == mongo.ErrNoDocuments {
 			tools.WriteJSON(w, types.UnsuccessResponse{Success: false, ErrorMessage: "Kullanıcı mevcut değil!", Code: types.USER_NOT_EXIST}, http.StatusUnauthorized)
 			return
@@ -162,7 +163,7 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 	}
 	nicknameCookie := &http.Cookie{
 		Name:    "nickname",
-		Value:   body.Nickname,
+		Value:   url.QueryEscape(body.Nickname), // türkçe karakterleride kaydetmesi için url.QueryEscape kullanıldı.
 		Expires: time.Now().Add(time.Hour * 24).UTC(),
 	}
 	http.SetCookie(w, tokenCookie)
