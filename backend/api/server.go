@@ -40,7 +40,7 @@ func (s *Server) authRoutes() {
 	s.mux.HandleFunc("POST /auth/signup", handlers.Signup)
 	s.mux.HandleFunc("POST /auth/signin", handlers.Signin)
 	s.mux.HandleFunc("POST /auth/logout", middlewares.RequireAuth(handlers.Logout))
-	s.mux.HandleFunc("GET /auth/isLoggedin", handlers.IsLoggedin)
+	s.mux.HandleFunc("GET /auth/isLoggedin", middlewares.RequireAuth(handlers.IsLoggedin))
 }
 
 func (s *Server) forumRoutes() {

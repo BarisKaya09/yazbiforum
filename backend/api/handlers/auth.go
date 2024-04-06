@@ -185,6 +185,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, nicknameCookie)
 	tools.WriteJSON(w, types.Response{Success: true, Message: "Başarılı bir şekilde çıkış yapıldı."}, http.StatusOK)
 }
-func IsLoggedin(w http.ResponseWriter, r *http.Request) {
 
+func IsLoggedin(w http.ResponseWriter, r *http.Request) {
+	tools.WriteJSON(w, types.Response{Success: true, Message: "Oturum açık."}, http.StatusOK)
 }
