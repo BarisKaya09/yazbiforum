@@ -2,9 +2,11 @@ package mongodb
 
 import (
 	"context"
+	"errors"
 
 	"github.com/BarisKaya09/YazBiForum/backend/types"
 	"github.com/fatih/color"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -13,6 +15,7 @@ type Storage interface {
 	Connect(uri string) error
 	Disconnect() error
 	InsertUser(user types.User) error
+	InsertForum(user *types.User, forum types.Forum) error
 }
 
 type MongoDBStorage struct {
@@ -55,6 +58,16 @@ func (ms *MongoDBStorage) FindOne(filter any, result *types.User) error {
 	coll := ms.client.Database("yazbiforum").Collection("users")
 	if err := coll.FindOne(context.TODO(), filter).Decode(&result); err != nil {
 		return err
+	}
+	return nil
+}
+
+func (ms *MongoDBStorage) InsertForum(user *types.User, forum types.Forum) error {
+	// user zaten geliyor o yüzden filter parametresi almaya gerek yok
+	coll := ms.client.Database("yazbiforum").Collection("users")
+	user.Forums = append(user.Forums, forum)
+	if _, err := coll.UpdateOne(context.TODO(), bson.D{{Key: "nickname", Value: user.Nickname}}, bson.D{{Key: "$set", Value: bson.D{{Key: "forums", Value: user.Forums}}}}); err != nil {
+		return errors.New("forum eklenirken bir hata oluştu")
 	}
 	return nil
 }
