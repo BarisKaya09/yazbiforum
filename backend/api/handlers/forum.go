@@ -81,7 +81,7 @@ func CreateForum(w http.ResponseWriter, r *http.Request) {
 
 	// türkçe karakterleride alabilmek için.
 	nicknameValue, _ := url.QueryUnescape(nickname.Value)
-	userForum := types.Forum{
+	newForum := types.Forum{
 		Id:          id,
 		Author:      nicknameValue,
 		Tag:         body.Tag,
@@ -113,7 +113,7 @@ func CreateForum(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := storage.InsertForum(&user, userForum); err != nil {
+	if err := storage.InsertForum(&user, newForum); err != nil {
 		tools.WriteJSON(w, types.UnsuccessResponse{Success: false, ErrorMessage: "Forum eklenirken beklenmedik bir hata oluştu!", Code: types.ANY_ERROR}, http.StatusInternalServerError)
 		return
 	}
