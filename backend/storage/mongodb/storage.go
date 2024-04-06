@@ -66,7 +66,9 @@ func (ms *MongoDBStorage) InsertForum(user *types.User, forum types.Forum) error
 	// user zaten geliyor o yüzden filter parametresi almaya gerek yok
 	coll := ms.client.Database("yazbiforum").Collection("users")
 	user.Forums = append(user.Forums, forum)
-	if _, err := coll.UpdateOne(context.TODO(), bson.D{{Key: "nickname", Value: user.Nickname}}, bson.D{{Key: "$set", Value: bson.D{{Key: "forums", Value: user.Forums}}}}); err != nil {
+	filter := bson.D{{Key: "nickname", Value: user.Nickname}}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "forums", Value: user.Forums}}}}
+	if _, err := coll.UpdateOne(context.TODO(), filter, update); err != nil {
 		return errors.New("forum eklenirken bir hata oluştu")
 	}
 	return nil
