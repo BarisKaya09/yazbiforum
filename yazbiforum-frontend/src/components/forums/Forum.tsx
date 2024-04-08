@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { type ForumBody } from "../../types";
 import PageTitle from "../ui/PageTitle";
 import Icon from "../ui/Icon";
-import { faBan, faThumbsUp, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faExclamation, faThumbsUp, faUser } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import ForumService from "../../services/ForumService";
 
@@ -52,6 +52,21 @@ const Forum: React.FC = () => {
     }
   };
 
+  // forum bulunmuyorsa ve ya silinmişse
+  if (!forum) {
+    return (
+      <div className="w-[40%] h-full flex flex-col justify-center py-[200px] m-auto">
+        <h1 className="text-[55px] text-rose-500">
+          <span className="mr-2">Forum bulunamadı</span>
+          <Icon icon_={faExclamation} className="p-3 bg-rose-500 text-white rounded-full animate-bounce" />
+        </h1>
+        <p className="text-sm text-gray-400">
+          {forumAuthorAndId?.[0]} adlı kullanıcı {forumAuthorAndId?.[1]} İd'ye sahip forumu kaldırmış.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-fulll px-40">
       <div className="flex gap-2">
@@ -71,14 +86,10 @@ const Forum: React.FC = () => {
       <div className="h-10 text-sm flex gap-2 select-none">
         {Array.isArray(forum?.tag) ? (
           forum.tag.map((tag) => (
-            <div className="min-w-[60px] px-2 h-[22px] cursor-pointer bg-teal-500 text-sm text-center rounded-sm leading-5 text-white">
-              {tag}
-            </div>
+            <div className="min-w-[60px] px-2 h-[22px] cursor-pointer bg-teal-500 text-sm text-center rounded-sm leading-5 text-white">{tag}</div>
           ))
         ) : (
-          <div className="min-w-[60px] px-2 h-[22px] cursor-pointer bg-teal-500 text-sm text-center rounded-sm leading-5 text-white">
-            {forum?.tag}
-          </div>
+          <div className="min-w-[60px] px-2 h-[22px] cursor-pointer bg-teal-500 text-sm text-center rounded-sm leading-5 text-white">{forum?.tag}</div>
         )}
       </div>
 
@@ -92,15 +103,12 @@ const Forum: React.FC = () => {
           </div>
 
           <div className="text-md text-slate-400 select-none">
-            <span className="text-slate-600">Son Güncelleme:</span>{" "}
-            {forum?.lastUpdate ? forum.lastUpdate : "Son güncelleme bulunmamakta."}
+            <span className="text-slate-600">Son Güncelleme:</span> {forum?.lastUpdate ? forum.lastUpdate : "Son güncelleme bulunmamakta."}
           </div>
         </div>
 
         <div className="w-[100px] h-1/3 flex border border-slate-500 rounded-md">
-          <div className="w-[60%] h-full text-center leading-6 border-r border-slate-500 text-xs px-1 select-none">
-            {forum?.likes.count} beğeni
-          </div>
+          <div className="w-[60%] h-full text-center leading-6 border-r border-slate-500 text-xs px-1 select-none">{forum?.likes.count} beğeni</div>
           {alreadyLiked ? (
             <button className="w-[40%] h-full text-center hover:bg-slate-500 duration-300">
               <Icon icon_={faBan} />
@@ -163,13 +171,7 @@ const Comments: React.FC<CommentsProps> = ({ forum, setDatas }) => {
         className="w-full flex justify-between my-6 duration-700"
         style={{ borderBottom: isFocus ? "2px solid rgb(17 24 39 / 1)" : "2px solid rgb(156 163 175 / 1)" }}
       >
-        <input
-          type="text"
-          placeholder="Yorum Ekleyin..."
-          className="w-[80%] h-10 outline-none"
-          style={{ background: "none" }}
-          ref={commentInputRef}
-        />
+        <input type="text" placeholder="Yorum Ekleyin..." className="w-[80%] h-10 outline-none" style={{ background: "none" }} ref={commentInputRef} />
 
         {isFocus && (
           <div className="flex gap-2">
@@ -183,10 +185,7 @@ const Comments: React.FC<CommentsProps> = ({ forum, setDatas }) => {
               İptal
             </button>
 
-            <button
-              onClick={addComment}
-              className="w-20 h-8 rounded-2xl bg-teal-600 text-slate-200 hover:bg-teal-700 duration-300"
-            >
+            <button onClick={addComment} className="w-20 h-8 rounded-2xl bg-teal-600 text-slate-200 hover:bg-teal-700 duration-300">
               Ekle
             </button>
           </div>
