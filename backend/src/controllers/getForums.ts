@@ -1,7 +1,8 @@
 import express from "express";
-import { anyError, mongoClient } from "../utils";
+import { anyError } from "../utils";
 import { type ForumTypes, type ForumBody, DISCUSSION, QUESTION, INFORMATION, type Tags } from "./forum";
-import { RegisterBody } from "./auth";
+
+import { MongoDBUserRepository } from "../repository/mongodb";
 import { err_codes } from "../types";
 import tags from "../data/tags";
 
@@ -15,46 +16,46 @@ export const getFilteredForum: express.Handler = async (req: express.Request, re
     return;
   }
 
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   try {
-    const coll = client.db("yazbiforum").collection("users");
-    const filteredForums = (await coll.find<RegisterBody>({}).toArray()).map((x) => x.forums)[1].filter((x) => x.type_ == ftype);
+    const allForum = await userRepo.find({});
+    const filteredForums = (await allForum.toArray())
+      .map((x) => x.forums)
+      .filter((x: any) => x.length)[0]
+      .filter((x: any) => x.type_ == ftype);
+
     res.status(200).json({ success: true, data: filteredForums });
   } catch (err) {
     res.status(402).json(anyError(err));
   } finally {
-    await client.close();
+    await userRepo.close();
   }
 };
 
 export const getAllForums: express.Handler = async (req: express.Request, res: express.Response) => {
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   try {
-    const coll = client.db("yazbiforum").collection("users");
-    const forums = (await coll.find<RegisterBody>({}).toArray()).map((x) => x.forums).filter((x) => x.length);
-    let data: ForumBody[] = [];
-    data = data.concat(...forums.map((x) => x));
-    res.status(200).json({ success: true, data });
+    const allForums = await userRepo.find({});
+    const forums = (await allForums.toArray()).map((x) => x.forums).filter((x) => x.length)[0];
+    res.status(200).json({ success: true, data: forums });
   } catch (err) {
     res.status(402).json(anyError(err));
   } finally {
-    await client.close();
+    await userRepo.close();
   }
 };
 
 export const getForumCountByTags: express.Handler = async (req: express.Request, res: express.Response) => {
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   const nickname = req.cookies.nickname;
   try {
-    const coll = client.db("yazbiforum").collection("users");
     const userTags: Tags[] = [];
-    (await coll.find<RegisterBody>({ nickname }).toArray())
-      .map((x) => x.forums)[0]
-      .forEach((x) => {
-        if (Array.isArray(x.tag)) {
-          userTags.push(...x.tag);
-        } else userTags.push(x.tag);
-      });
+    const user = await userRepo.findOne({ nickname });
+    user?.forums.forEach((x) => {
+      if (Array.isArray(x.tag)) {
+        userTags.push(...x.tag);
+      } else userTags.push(x.tag);
+    });
 
     const data = [];
     for (const tag of [...new Set(userTags)]) {
@@ -68,32 +69,30 @@ export const getForumCountByTags: express.Handler = async (req: express.Request,
   } catch (err) {
     res.status(402).json(anyError(err));
   } finally {
-    await client.close();
+    await userRepo.close();
   }
 };
 
 export const getTotalLikes: express.Handler = async (req: express.Request, res: express.Response) => {
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   const nickname = req.cookies.nickname;
   try {
     let totalLikes: number = 0;
-    const coll = client.db("yazbiforum").collection("users");
-    (await coll.find<RegisterBody>({ nickname }).toArray()).map((x) => x.forums)[0].forEach((x) => (totalLikes += x.likes.count));
-
+    const user = await userRepo.findOne({ nickname });
+    user?.forums.forEach((x) => (totalLikes += x.likes.count));
     res.status(200).json({ success: true, data: totalLikes });
   } catch (err) {
     res.status(402).json(anyError(err));
   } finally {
-    await client.close();
+    await userRepo.close();
   }
 };
 
 export const getForumById: express.Handler = async (req: express.Request, res: express.Response) => {
   const { author, id } = req.params;
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   try {
-    const coll = client.db("yazbiforum").collection("users");
-    const forumOwner = await coll.findOne<RegisterBody>({ nickname: author });
+    const forumOwner = await userRepo.findOne({ nickname: author });
     if (!forumOwner) {
       res.status(402).json({
         success: false,
@@ -114,22 +113,20 @@ export const getForumById: express.Handler = async (req: express.Request, res: e
   } catch (err) {
     res.status(402).json(anyError(err));
   } finally {
-    await client.close();
+    await userRepo.close();
   }
 };
 
 export const getUserForumById: express.Handler = async (req: express.Request, res: express.Response) => {
   const { id } = req.params;
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   const nickname = req.cookies.nickname;
 
   try {
-    const coll = client.db("yazbiforum").collection("users");
-    const user = await coll.findOne<RegisterBody>({ nickname });
+    const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
+    const user = await userRepo.findOne({ nickname });
     if (!user) {
-      res
-        .status(402)
-        .json({ success: false, data: { error: { message: "Kullanıcı bulunamadı", code: err_codes.USER_NOT_EXIST } } });
+      res.status(402).json({ success: false, data: { error: { message: "Kullanıcı bulunamadı", code: err_codes.USER_NOT_EXIST } } });
       return;
     }
     const userForum = user?.forums.find((forum) => forum._id == id);
@@ -145,7 +142,7 @@ export const getUserForumById: express.Handler = async (req: express.Request, re
   } catch (err) {
     res.status(402).json(anyError(err));
   } finally {
-    await client.close();
+    await userRepo.close();
   }
 };
 
@@ -153,19 +150,16 @@ export const searchForum: express.Handler = async (req: express.Request, res: ex
   const { searchArg }: { searchArg: string } = req.body;
   // burada boş bir searchArg gelirse hata fırlatmaya veya status code göndermeye gerek yok.
   if (!searchArg) return;
-
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   try {
-    const coll = client.db("yazbiforum").collection("users");
-    const forums = (await coll.find<RegisterBody>({}).toArray()).map((x) => x.forums).filter((x) => x.length);
-    let data: ForumBody[] = [];
-    data = data.concat(...forums.map((x) => x));
-    const searchedForums = data.filter((x) => x.title.toLowerCase().slice(0, searchArg.length) == searchArg.toLowerCase());
+    const forumsCursor = await userRepo.find({});
+    const forums = (await forumsCursor.toArray()).map((x) => x.forums).filter((x) => x.length)[0];
+    const searchedForums = forums.filter((x: ForumBody) => x.title.toLowerCase().slice(0, searchArg.length) == searchArg.toLowerCase());
     res.status(200).json({ success: true, data: searchedForums });
   } catch (err: any) {
     res.status(402).json(anyError(err));
   } finally {
-    await client.close();
+    await userRepo.close();
   }
 };
 
@@ -173,17 +167,16 @@ export const searchUserForum: express.Handler = async (req: express.Request, res
   const { searchArg }: { searchArg: string } = req.body;
   // burada boş bir searchArg gelirse hata fırlatmaya veya status code göndermeye gerek yok.
   if (!searchArg) return;
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   const nickname = req.cookies.nickname;
 
   try {
-    const coll = client.db("yazbiforum").collection("users");
-    const forums = (await coll.find<RegisterBody>({ nickname }).toArray()).map((x) => x.forums)[0];
-    const searchedForums = forums.filter((x) => x.title.toLowerCase().slice(0, searchArg.length) == searchArg.toLowerCase());
+    const user = await userRepo.findOne({ nickname });
+    const searchedForums = user?.forums.filter((x) => x.title.toLowerCase().slice(0, searchArg.length) == searchArg.toLowerCase());
     res.status(200).json({ success: true, data: searchedForums });
   } catch (err: any) {
     res.status(402).json(anyError(err));
   } finally {
-    await client.close();
+    await userRepo.close();
   }
 };

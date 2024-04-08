@@ -1,7 +1,8 @@
 import express from "express";
 import { err_codes } from "../types";
 import tags from "../data/tags";
-import { anyError, mongoClient } from "../utils";
+import { anyError } from "../utils";
+import { MongoDBUserRepository } from "../repository/mongodb";
 import { Interactions, type RegisterBody } from "./auth";
 import { v4 as uuidv4 } from "uuid";
 
@@ -131,11 +132,10 @@ export const createForum: express.Handler = async (req: express.Request, res: ex
   };
 
   const nickname = req.cookies.nickname as string;
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   try {
-    const coll = client.db("yazbiforum").collection("users");
-    const user: RegisterBody | null = await coll.findOne<RegisterBody>({ nickname });
-    if (user) await coll.updateOne({ nickname }, { $set: { forums: [...user.forums, userForum] } });
+    const user: RegisterBody | null = await userRepo.findOne({ nickname });
+    if (user) await userRepo.updateOne({ nickname }, { $set: { forums: [...user.forums, userForum] } });
     else {
       res.status(402).json({
         success: false,
@@ -147,7 +147,7 @@ export const createForum: express.Handler = async (req: express.Request, res: ex
     res.status(400).json(anyError(err));
     return;
   } finally {
-    await client.close();
+    await userRepo.close();
   }
   res.status(200).json({ success: true, data: "Forum başarılı bir şekilde eklendi." });
 };
@@ -165,10 +165,9 @@ export const likeForum: express.Handler = async (req: express.Request, res: expr
     return;
   }
 
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   try {
-    const coll = client.db("yazbiforum").collection("users");
-    const forumOwner: RegisterBody | null = await coll.findOne<RegisterBody>({ nickname: forumOwnerNickname });
+    const forumOwner: RegisterBody | null = await userRepo.findOne({ nickname: forumOwnerNickname });
     if (forumOwner) {
       const userForum: ForumBody | undefined = forumOwner.forums.find((i) => i._id == _id);
       if (userForum) {
@@ -186,16 +185,13 @@ export const likeForum: express.Handler = async (req: express.Request, res: expr
         newUserForums.push(userForum);
 
         // add interaction
-        const userWhoLiked = await coll.findOne<RegisterBody>({ nickname });
+        const userWhoLiked = await userRepo.findOne({ nickname });
         if (userWhoLiked) {
           const newUserInteractions: Interactions = {
-            likedForums: [
-              ...userWhoLiked.interactions?.likedForums,
-              { _id, author: userForum.author, title: userForum.title, releaseDate: userForum.releaseDate },
-            ],
+            likedForums: [...userWhoLiked.interactions?.likedForums, { _id, author: userForum.author, title: userForum.title, releaseDate: userForum.releaseDate }],
             commented: [...userWhoLiked.interactions?.commented],
           };
-          await coll.updateOne({ nickname }, { $set: { interactions: newUserInteractions } });
+          await userRepo.updateOne({ nickname }, { $set: { interactions: newUserInteractions } });
         } else {
           res.status(402).json({
             success: false,
@@ -204,7 +200,7 @@ export const likeForum: express.Handler = async (req: express.Request, res: expr
           return;
         }
 
-        await coll.updateOne({ nickname: forumOwnerNickname }, { $set: { forums: newUserForums } });
+        await userRepo.updateOne({ nickname: forumOwnerNickname }, { $set: { forums: newUserForums } });
       } else {
         res.status(402).json({
           success: false,
@@ -223,7 +219,7 @@ export const likeForum: express.Handler = async (req: express.Request, res: expr
     res.status(400).json({ success: false, data: { error: { message: `Bir hata oluştu: ${err}`, code: err_codes.ANY_ERR } } });
     return;
   } finally {
-    await client.close();
+    await userRepo.close();
   }
   res.status(200).json({ success: true, data: "Forum Beğenildi" });
 };
@@ -239,10 +235,9 @@ export const deleteForum: express.Handler = async (req: express.Request, res: ex
   }
 
   const nickname = req.cookies.nickname as string;
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   try {
-    const coll = client.db("yazbiforum").collection("users");
-    const user = await coll.findOne<RegisterBody>({ nickname });
+    const user = await userRepo.findOne({ nickname });
     if (user) {
       if (!user.forums.find((i) => i._id == _id)) {
         res.status(402).json({
@@ -252,7 +247,7 @@ export const deleteForum: express.Handler = async (req: express.Request, res: ex
         return;
       }
       user.forums = user.forums.filter((i) => i._id != _id);
-      await coll.updateOne({ nickname }, { $set: { forums: user.forums } });
+      await userRepo.updateOne({ nickname }, { $set: { forums: user.forums } });
     } else {
       res.status(402).json({
         success: false,
@@ -264,7 +259,7 @@ export const deleteForum: express.Handler = async (req: express.Request, res: ex
     res.status(400).json(anyError(err));
     return;
   } finally {
-    await client.close();
+    await userRepo.close();
   }
 
   res.status(200).json({ success: true, data: "Forum Silindi." });
@@ -283,10 +278,9 @@ export const createComment: express.Handler = async (req: express.Request, res: 
     return;
   }
 
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   try {
-    const coll = client.db("yazbiforum").collection("users");
-    const user: RegisterBody | null = await coll.findOne<RegisterBody>({ nickname: forumOwner });
+    const user: RegisterBody | null = await userRepo.findOne({ nickname: forumOwner });
     if (user) {
       const date = new Date();
       const comment: CommentBody = {
@@ -299,13 +293,10 @@ export const createComment: express.Handler = async (req: express.Request, res: 
       const forum = user.forums.find((i) => i._id == _id);
       if (forum) {
         forum.comments.push(comment);
-        await coll.updateOne(
-          { nickname: forumOwner },
-          { $set: { forums: [...user.forums.filter((i) => i._id != forum._id), forum] } }
-        );
+        await userRepo.updateOne({ nickname: forumOwner }, { $set: { forums: [...user.forums.filter((i) => i._id != forum._id), forum] } });
 
         // add interaction a comment
-        const authorAcc = await coll.findOne<RegisterBody>({ nickname: author });
+        const authorAcc = await userRepo.findOne({ nickname: author });
         if (authorAcc) {
           const newUserInteractions: Interactions = {
             likedForums: [...authorAcc.interactions?.likedForums],
@@ -321,7 +312,7 @@ export const createComment: express.Handler = async (req: express.Request, res: 
             ],
           };
 
-          await coll.updateOne({ nickname: author }, { $set: { interactions: newUserInteractions } });
+          await userRepo.updateOne({ nickname: author }, { $set: { interactions: newUserInteractions } });
         } else {
           res.status(402).json({
             success: false,
@@ -347,7 +338,7 @@ export const createComment: express.Handler = async (req: express.Request, res: 
     res.status(400).json(anyError(err));
     return;
   } finally {
-    await client.close();
+    await userRepo.close();
   }
 
   res.status(200).json({ success: true, data: "Yorum eklendi." });
@@ -424,10 +415,9 @@ export const updateForum: express.Handler = async (req: express.Request, res: ex
   }
 
   const nickname = req.cookies.nickname;
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   try {
-    const coll = client.db("yazbiforum").collection("users");
-    const user = await coll.findOne<RegisterBody>({ nickname });
+    const user = await userRepo.findOne({ nickname });
     if (user) {
       let updatedUserForum = user.forums.find((i) => i._id == _id);
       if (updatedUserForum) {
@@ -440,7 +430,7 @@ export const updateForum: express.Handler = async (req: express.Request, res: ex
         });
         return;
       }
-      await coll.updateOne({ nickname }, { $set: { forums: [...user.forums.filter((i) => i._id != _id), updatedUserForum] } });
+      await userRepo.updateOne({ nickname }, { $set: { forums: [...user.forums.filter((i) => i._id != _id), updatedUserForum] } });
     } else {
       res.status(402).json({
         success: false,
@@ -452,7 +442,7 @@ export const updateForum: express.Handler = async (req: express.Request, res: ex
     res.status(400).json(anyError(err));
     return;
   } finally {
-    await client.close();
+    await userRepo.close();
   }
 
   res.status(200).json({ success: true, data: "Forum Güncellendi." });

@@ -1,6 +1,7 @@
 import express from "express";
 import validator from "validator";
-import { hashPassword, mongoClient, comparePassword } from "../utils";
+import { hashPassword, comparePassword } from "../utils";
+import { MongoDBUserRepository } from "../repository/mongodb";
 import { err_codes } from "../types";
 import jwt from "jsonwebtoken";
 import { CommentBody, type ForumBody } from "./forum";
@@ -59,7 +60,7 @@ export const signup: express.Handler = async (req: express.Request, res: express
     return;
   }
 
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   try {
     // hash password
     const hashedPassword = await hashPassword(password, 10);
@@ -76,8 +77,7 @@ export const signup: express.Handler = async (req: express.Request, res: express
     };
 
     // db connectsion
-    const coll = client.db("yazbiforum").collection("users");
-    if ((await coll.findOne({ nickname: user.nickname })) || (await coll.findOne({ email: user.email }))) {
+    if ((await userRepo.findOne({ nickname: user.nickname })) || (await userRepo.findOne({ email: user.email }))) {
       res.status(422).json({
         success: false,
         data: {
@@ -89,12 +89,12 @@ export const signup: express.Handler = async (req: express.Request, res: express
       });
       return;
     }
-    await coll.insertOne(user);
+    await userRepo.insertOne(user);
   } catch (err) {
     res.status(400).json(anyError(err));
     return;
   } finally {
-    await client.close();
+    await userRepo.close();
   }
 
   res.status(200).json({ success: true, data: "Kayıt başarılı!" });
@@ -116,10 +116,9 @@ export const signin: express.Handler = async (req: express.Request, res: express
     return;
   }
 
-  const client = mongoClient(process.env.MONGODB_URI as string);
+  const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   try {
-    const coll = client.db("yazbiforum").collection("users");
-    const user = await coll.findOne({ nickname: nickname });
+    const user = await userRepo.findOne({ nickname: nickname });
 
     if (!user) {
       res.status(404).json({
@@ -144,7 +143,7 @@ export const signin: express.Handler = async (req: express.Request, res: express
     res.status(400).json(anyError(err));
     return;
   } finally {
-    await client.close();
+    await userRepo.close();
   }
 
   res.status(200).json({ success: true, data: "Başarılı bir şekilde giriş yapıldı!" });
