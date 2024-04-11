@@ -1,25 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Colors, type ForumTypes, type Tags } from "../../types";
 import { getTags } from "../../utils";
 import LoadAnimate from "../LoadAnimate";
 
 type SidebarProps = {
+  filterByTags: Tags | "hepsi";
   setFilterByTags: React.Dispatch<React.SetStateAction<Tags | "hepsi">>;
+  filterByType: ForumTypes | "hepsi";
   setFilterByType: React.Dispatch<React.SetStateAction<ForumTypes | "hepsi">>;
 };
-const Sidebar: React.FC<SidebarProps> = ({ setFilterByTags, setFilterByType }) => {
+const Sidebar: React.FC<SidebarProps> = ({ setFilterByTags, setFilterByType, filterByTags, filterByType }) => {
   const [tags, setTags] = useState<Tags[]>();
 
   useEffect(() => {
     (async () => setTags((await getTags()).map((x) => x.tag_name)))();
   }, []);
-  // TODO: taglara göre filtrelemede bug var.
+
+  const setFilterAll = useCallback(() => {
+    setFilterByTags("hepsi");
+    setFilterByType("hepsi");
+  }, [filterByTags, filterByType]);
+
   return (
     <div className="w-[20%] h-[650px]">
       <LoadAnimate atype="left-to-right" duration={400}>
         <div className="w-full h-[650px] bg-[#e7e5de] rounded-md p-3" style={{ color: Colors.Text }}>
           <div
-            onClick={() => setFilterByType("hepsi")}
+            onClick={setFilterAll}
             className="w-20 h-7 text-center text-white text-sm bg-gray-700 leading-7 rounded-sm cursor-pointer hover:bg-gray-800 duration-300"
           >
             Hepsi

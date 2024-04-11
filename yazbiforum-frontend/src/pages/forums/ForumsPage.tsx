@@ -42,7 +42,7 @@ const ForumsPages: React.FC = () => {
           path="/"
           element={
             <div className="w-full h-full flex gap-20">
-              <Sidebar setFilterByType={setFilterByType} setFilterByTags={setFilterByTags} />
+              <Sidebar setFilterByType={setFilterByType} setFilterByTags={setFilterByTags} filterByTags={filterByTags} filterByType={filterByType} />
               <Forums userForums={userForums} setUserForums={setUserForums} />
             </div>
           }
