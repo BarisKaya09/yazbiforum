@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { Colors, type ForumTypes, type Tags } from "../../types";
+import { type ForumTypes, type Tags } from "../../types";
 import { getTags } from "../../utils";
-import LoadAnimate from "../LoadAnimate";
 import Icon from "../ui/Icon";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
