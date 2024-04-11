@@ -71,12 +71,12 @@ const ForumsBody: React.FC<ForumsBodyProps> = ({ userForums, searching }) => {
           </li>
         </ul>
       ) : (
-        <ul className="w-full">
+        <ul className="w-full h-full grid grid-cols-2 gap-10">
           {userForums?.map((forum) => (
             <li className="w-full">
               <LoadAnimate atype="opacity" duration={0}>
                 <NavLink to={`${forum.author}/${forum._id}`}>
-                  <div className="w-full min-h-[100px] py-5 flex gap-3 flex-col pl-5 pr-5 border-x shadow-md border-slate-600 rounded-md mb-5 select-none cursor-pointer hover:opacity-80 duration-300">
+                  <div className="w-full min-h-[140px] py-5 flex gap-3 flex-col pl-5 pr-5 border border-[#eee0c7] shadow-md rounded-md mb-5 select-none cursor-pointer hover:opacity-80 duration-300">
                     <div className="w-full h-[20%] flex justify-between">
                       <h3 className="text-md" style={{ color: Colors.ColorfullyText }}>
                         <LoadAnimate atype="skeleton-load" duration={50}>
@@ -84,7 +84,7 @@ const ForumsBody: React.FC<ForumsBodyProps> = ({ userForums, searching }) => {
                         </LoadAnimate>
                       </h3>
 
-                      <div className="min-w-[60px] h-[29px] border-2 border-emerald-600 cursor-pointer rounded-md text-center px-2">
+                      <div className="min-w-[40px] h-[20px] text-xs leading-4 border-2 border-emerald-600 cursor-pointer rounded-md text-center px-2">
                         <LoadAnimate atype="skeleton-load" duration={70}>
                           {forum.type_}
                         </LoadAnimate>
@@ -98,12 +98,8 @@ const ForumsBody: React.FC<ForumsBodyProps> = ({ userForums, searching }) => {
                     </div>
 
                     <div className="w-full h-[10%] flex justify-between py-1">
-                      <div className="w-2/3 h-full flex gap-2">
-                        <div className="h-full text-sm text-rose-500 pt-[2px]">
-                          <LoadAnimate atype="skeleton-load" duration={110}>
-                            {forum.author}
-                          </LoadAnimate>
-                        </div>
+                      {/* <div className="w-2/3 h-full flex gap-2"> */}
+                      <div className="w-full flex gap-2">
                         {Array.isArray(forum.tag) ? (
                           forum.tag.map((t) => (
                             <div className="min-w-[60px] h-[22px]">
@@ -119,23 +115,37 @@ const ForumsBody: React.FC<ForumsBodyProps> = ({ userForums, searching }) => {
                             </LoadAnimate>
                           </div>
                         )}
+
                         <div className="h-full text-sm pt-[2px]">
                           <LoadAnimate atype="skeleton-load" duration={170}>
                             Son güncelleme {forum.lastUpdate.length == 0 ? "yok" : forum.lastUpdate}
                           </LoadAnimate>
                         </div>
 
-                        <div className="h-full text-sm text-teal-500 pt-[2px]">
+                        <div className="min-w-10 text-sm text-teal-500 pt-[2px]">
                           <LoadAnimate atype="skeleton-load" duration={190}>
                             {forum.likes.count} Beğeni
                           </LoadAnimate>
                         </div>
 
-                        <div className="h-full text-sm text-teal-500 pt-[2px]">
+                        <div className="min-w-10 text-sm text-teal-500 pt-[2px]">
                           <LoadAnimate atype="skeleton-load" duration={210}>
                             {forum.comments.length} Yorum
                           </LoadAnimate>
                         </div>
+                      </div>
+
+                      {/* <div className="w-1/3 h-full flex gap-2 justify-end text-sm text-teal-500 pt-[2px]"></div> */}
+
+                      {/* <div className="h-full text-sm text-teal-500 pt-[2px]"></div> */}
+                      {/* </div> */}
+                    </div>
+
+                    <div className="w-full h-[10%] flex justify-between py-1">
+                      <div className="h-full text-sm text-rose-500 pt-[2px]">
+                        <LoadAnimate atype="skeleton-load" duration={110}>
+                          {forum.author}
+                        </LoadAnimate>
                       </div>
 
                       <div className="w-1/3 text-right pt-[2px]">
