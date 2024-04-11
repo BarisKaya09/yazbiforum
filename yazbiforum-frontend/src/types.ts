@@ -1,15 +1,9 @@
-export type LoadAnimates =
-  | "top-to-bottom"
-  | "bottom-to-top"
-  | "left-to-right"
-  | "right-to-left"
-  | "left-cross-to-bottom"
-  | "right-cross-to-bottom";
+export type LoadAnimates = "top-to-bottom" | "bottom-to-top" | "left-to-right" | "right-to-left" | "left-cross-to-bottom" | "right-cross-to-bottom";
 
 export enum Colors {
   Text = "#402B3A",
   ColorfullyText = "#D63484",
-  BackgroundColor = "#f8f4ec",
+  BackgroundColor = "#eee7db",
   ButtonCardBorder = "#D63484",
 }
 
@@ -149,12 +143,7 @@ export type EditPasswordFields = {
   password: string;
 };
 
-export type EditAccountData =
-  | EditNameSurnameFields
-  | EditNicknameFields
-  | EditDateOfBirthFields
-  | EditEmailFields
-  | EditPasswordFields;
+export type EditAccountData = EditNameSurnameFields | EditNicknameFields | EditDateOfBirthFields | EditEmailFields | EditPasswordFields;
 
 export type EditField = "name-surname" | "nickname" | "date-of-birth" | "email" | "password";
 
