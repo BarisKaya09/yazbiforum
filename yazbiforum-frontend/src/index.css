@@ -136,6 +136,33 @@
   }
 }
 
+.opacity {
+  animation: opacity 1s ease-in-out;
+}
+@keyframes opacity {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.skeleton-load {
+  animation: skeleton-load 1s cubic-bezier(1, 0, 0.2, 1);
+}
+@keyframes skeleton-load {
+  0%,
+  50% {
+    opacity: 0;
+  }
+  75%,
+  100% {
+    /* transform: scale(2); */
+    opacity: 1;
+  }
+}
+
 @keyframes deleteCommentAnim {
   0% {
     opacity: 0.75;

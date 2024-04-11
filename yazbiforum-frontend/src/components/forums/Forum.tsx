@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { type ForumBody } from "../../types";
 import PageTitle from "../ui/PageTitle";
 import Icon from "../ui/Icon";
-import { faBan, faExclamation, faThumbsUp, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faExclamation, faSpinner, faThumbsUp, faUser } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import ForumService from "../../services/ForumService";
 
@@ -10,6 +10,7 @@ const Forum: React.FC = () => {
   const [forumAuthorAndId, setForumAuthorAndId] = useState<string[]>();
   const [forum, setForum] = useState<ForumBody>();
   const [alreadyLiked, setAlreadyLiked] = useState<boolean>(false);
+  const [forumIsFetchComplated, setForumIsFetchComplated] = useState<boolean>(false);
 
   useEffect(() => {
     const href = window.location.href.split("/");
@@ -22,13 +23,15 @@ const Forum: React.FC = () => {
       const data = await ForumService.getForumById(forumAuthorAndId[0], forumAuthorAndId[1]);
       if (data.success) {
         setForum(data.data.forum);
-
         if (data.data.forum.likes.users.includes(data.data.nickname)) setAlreadyLiked(true);
         else setAlreadyLiked(false);
+      } else {
       }
     } catch (err: any) {
+      setForumIsFetchComplated(true);
       throw err;
     }
+    setForumIsFetchComplated(true);
   };
 
   useEffect(() => {
@@ -52,17 +55,26 @@ const Forum: React.FC = () => {
     }
   };
 
-  // forum bulunmuyorsa ve ya silinmişse
+  // backend cevap döndükten sonra forum bulunmuyorsa veya silinmişse
   if (!forum) {
     return (
       <div className="w-[40%] h-full flex flex-col justify-center py-[200px] m-auto">
-        <h1 className="text-[55px] text-rose-500">
-          <span className="mr-2">Forum bulunamadı</span>
-          <Icon icon_={faExclamation} className="p-3 bg-rose-500 text-white rounded-full animate-bounce" />
-        </h1>
-        <p className="text-sm text-gray-400">
-          {forumAuthorAndId?.[0]} adlı kullanıcı {forumAuthorAndId?.[1]} İd'ye sahip forumu kaldırmış.
-        </p>
+        {/**yüklenme animasyonu forum varsada çalışacak */}
+        {!forumIsFetchComplated ? (
+          <div className="w-20 h-20 text-rose-500 m-auto">
+            <Icon icon_={faSpinner} className="w-full h-full animate-spin" />
+          </div>
+        ) : (
+          <div className="w-full h-full">
+            <h1 className="text-[55px] text-rose-500">
+              <span className="mr-2">Forum bulunamadı</span>
+              <Icon icon_={faExclamation} className="p-3 bg-rose-500 text-white rounded-full animate-bounce" />
+            </h1>
+            <p className="text-sm text-gray-400">
+              {forumAuthorAndId?.[0]} adlı kullanıcı {forumAuthorAndId?.[1]} İd'ye sahip forumu kaldırmış.
+            </p>
+          </div>
+        )}
       </div>
     );
   }

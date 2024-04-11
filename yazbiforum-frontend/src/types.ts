@@ -1,4 +1,12 @@
-export type LoadAnimates = "top-to-bottom" | "bottom-to-top" | "left-to-right" | "right-to-left" | "left-cross-to-bottom" | "right-cross-to-bottom";
+export type LoadAnimates =
+  | "top-to-bottom"
+  | "bottom-to-top"
+  | "left-to-right"
+  | "right-to-left"
+  | "left-cross-to-bottom"
+  | "right-cross-to-bottom"
+  | "skeleton-load"
+  | "opacity";
 
 export enum Colors {
   Text = "#402B3A",
