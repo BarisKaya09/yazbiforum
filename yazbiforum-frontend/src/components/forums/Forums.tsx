@@ -40,15 +40,15 @@ const Nav: React.FC<NavProps> = ({ setUserForums, setSearching }) => {
   return (
     <LoadAnimate atype="right-to-left" duration={400}>
       <div className="w-full flex justify-end">
-        <div className="w-[400px] h-9 flex bg-gray-600 p-2 rounded-sm">
+        <div className="w-[280px] h-9 flex shadow-md border border-[#eee0c7] p-2 rounded-full px-4">
+          <Icon icon_={faSearch} className="w-[30px] h-full text-gray-400 cursor-pointer" />
           <input
             type="text"
             placeholder="Ara"
-            className="w-[370px] h-full text-white text-sm outline-none pl-2"
+            className="w-[370px] h-full text-gray-400 text-sm outline-none pl-2 select-none"
             style={{ background: "none" }}
             onChange={searchForum}
           />
-          <Icon icon_={faSearch} className="w-[30px] h-full text-white cursor-pointer" />
         </div>
       </div>
     </LoadAnimate>
