@@ -91,7 +91,7 @@ const ForumsBody: React.FC<ForumsBodyProps> = ({ userForums, searching }) => {
                         </LoadAnimate>
                       </h3>
 
-                      <div className="min-w-[40px] h-[20px] text-xs leading-4 border-2 border-emerald-600 border-dashed bg-emerald-200 text-emerald-600 cursor-pointer rounded-md text-center px-2">
+                      <div className="min-w-[40px] h-[20px] text-xs leading-4 border-2 border-violet-600 border-dashed bg-violet-200 text-violet-600 cursor-pointer rounded-md text-center px-2">
                         <LoadAnimate atype="skeleton-load" duration={70}>
                           {forum.type_}
                         </LoadAnimate>

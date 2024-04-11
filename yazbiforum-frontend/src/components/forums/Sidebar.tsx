@@ -34,7 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setFilterByTags, setFilterByType, fil
   };
 
   return (
-    <div className="w-[19%] h-[770px] px-5 py-5 border border-[#eee0c7] rounded-xl shadow-md">
+    <div className="w-full h-full px-5 py-5 border border-[#eee0c7] rounded-xl shadow-md">
       {/* tags */}
       <div className="w-full h-[500px]">
         <div className="w-full flex justify-between">
