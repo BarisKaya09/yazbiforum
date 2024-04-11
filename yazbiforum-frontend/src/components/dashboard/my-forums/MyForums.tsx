@@ -1,15 +1,18 @@
+import { useEffect, useState, useRef } from "react";
+import { NavLink } from "react-router-dom";
+
 import { type ForumBody, type Tags, type ForumTypes } from "../../../types";
 import PageTitle from "../../ui/PageTitle";
 import { Colors } from "../../../types";
 import LoadAnimate from "../../LoadAnimate";
-import { NavLink } from "react-router-dom";
 import Icon from "../../ui/Icon";
-import { faPlus, faChevronDown, faChevronUp, IconDefinition, faTrash, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState, useRef } from "react";
 import { getTags, filterForumByTags, filterForumByType, getAccountData } from "../../../utils";
-import ForumService from "../../../services/ForumService";
-import { ToastContainer, toast } from "react-toastify";
 import { ForumSkeletonDark } from "../../ui/ForumSkeleton";
+
+import { faPlus, faChevronDown, faChevronUp, IconDefinition, faTrash, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from "react-toastify";
+
+import ForumService from "../../../services/ForumService";
 
 type FilterByTagProps = {
   setFilterTag: React.Dispatch<React.SetStateAction<Tags | "hepsi">>;
@@ -38,10 +41,7 @@ const FilterByTag: React.FC<FilterByTagProps> = ({ setFilterTag }) => {
         <Icon icon_={icon} className="text-xs mt-2" />
       </div>
 
-      <div
-        ref={tagsRef}
-        className="absolute hidden w-52 h-[300px] z-40 rounded-xl bg-[#161c32] shadow-2xl overflow-scroll -left-16 top-16"
-      >
+      <div ref={tagsRef} className="absolute hidden w-52 h-[300px] z-40 rounded-xl bg-[#161c32] shadow-2xl overflow-scroll -left-16 top-16">
         <ul className="w-full h-full">
           <li
             onClick={() => {
@@ -248,9 +248,7 @@ const MyForums: React.FC<IProps> = ({ forums }) => {
                               {forum.title}
                             </h3>
 
-                            <div className="min-w-[60px] h-[29px] border-2 px-2 border-emerald-600 cursor-pointer rounded-md text-center">
-                              {forum.type_}
-                            </div>
+                            <div className="min-w-[60px] h-[29px] border-2 px-2 border-emerald-600 cursor-pointer rounded-md text-center">{forum.type_}</div>
                           </div>
 
                           <div className="w-full h-[70%] whitespace-pre-wrap">
@@ -263,19 +261,13 @@ const MyForums: React.FC<IProps> = ({ forums }) => {
                               {/* <div className="w-[100px] h-[22px] flex gap-2 overflow-scroll"> */}
                               {Array.isArray(forum.tag) ? (
                                 forum.tag.map((t) => (
-                                  <div className="min-w-[60px] h-[22px] px-2 cursor-pointer bg-indigo-700 text-sm text-center rounded-sm leading-5">
-                                    {t}
-                                  </div>
+                                  <div className="min-w-[60px] h-[22px] px-2 cursor-pointer bg-indigo-700 text-sm text-center rounded-sm leading-5">{t}</div>
                                 ))
                               ) : (
-                                <div className="min-w-[60px] h-[22px] px-2 cursor-pointer bg-indigo-700 text-sm text-center rounded-sm leading-5">
-                                  {forum.tag}
-                                </div>
+                                <div className="min-w-[60px] h-[22px] px-2 cursor-pointer bg-indigo-700 text-sm text-center rounded-sm leading-5">{forum.tag}</div>
                               )}
                               {/* </div> */}
-                              <div className="h-full text-sm pt-[2px]">
-                                Son güncelleme {forum.lastUpdate.length == 0 ? "yok" : forum.lastUpdate}
-                              </div>
+                              <div className="h-full text-sm pt-[2px]">Son güncelleme {forum.lastUpdate.length == 0 ? "yok" : forum.lastUpdate}</div>
                               <div className="h-full text-sm text-slate-300 pt-[2px]">{forum.likes.count} Beğeni</div>
                               <div className="h-full text-sm text-slate-300 pt-[2px]">{forum.comments.length} Yorum</div>
                             </div>
