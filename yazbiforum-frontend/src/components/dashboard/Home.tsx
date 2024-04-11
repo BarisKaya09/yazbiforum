@@ -19,14 +19,14 @@ const LeftTopSide: React.FC<LeftTopSideProps> = ({ totalForum, totalLikes, nickn
   return (
     <LoadAnimate atype="top-to-bottom">
       <div className="w-full h-[130px] flex gap-6">
-        <div className="w-[270px] h-full rounded-2xl bg-gradient-to-r from-[#d26ef2] to-[#a072f6] text-center pt-4 shadow-2xl select-none cursor-pointer">
+        <div className="w-[270px] h-full rounded-2xl bg-fuchsia-200 border-4 border-dashed border-fuchsia-600 text-fuchsia-600 text-center pt-4 shadow-2xl select-none cursor-pointer">
           <div>Toplam Beğeni Sayısı</div>
           <div className="w-full text-5xl mt-4">
             <b>{totalLikes}</b>
           </div>
         </div>
 
-        <div className="w-[270px] h-full rounded-2xl bg-gradient-to-r from-[#1fe6e3] to-[#4889d9] text-center pt-4 shadow-2xl select-none cursor-pointer">
+        <div className="w-[270px] h-full rounded-2xl bg-teal-200 border-4 border-dashed border-teal-600 text-teal-600 text-center pt-4 shadow-2xl select-none cursor-pointer">
           <div>Toplam Forum Sayısı</div>
           <div className="w-full text-5xl mt-4">
             <b>{totalForum}</b>

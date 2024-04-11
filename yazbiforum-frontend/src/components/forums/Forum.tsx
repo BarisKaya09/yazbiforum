@@ -98,10 +98,14 @@ const Forum: React.FC = () => {
       <div className="h-10 text-sm flex gap-2 select-none">
         {Array.isArray(forum?.tag) ? (
           forum.tag.map((tag) => (
-            <div className="min-w-[60px] px-2 h-[22px] cursor-pointer bg-teal-500 text-sm text-center rounded-sm leading-5 text-white">{tag}</div>
+            <div className="min-w-[60px] px-2 h-[22px] cursor-pointer border-2 border-dashed border-violet-600 text-violet-600 bg-violet-200 text-sm text-center rounded-sm leading-4">
+              {tag}
+            </div>
           ))
         ) : (
-          <div className="min-w-[60px] px-2 h-[22px] cursor-pointer bg-teal-500 text-sm text-center rounded-sm leading-5 text-white">{forum?.tag}</div>
+          <div className="min-w-[60px] px-2 h-[22px] cursor-pointer border-2 border-dashed border-violet-600 text-violet-600 bg-violet-200 text-sm text-center rounded-sm leading-4">
+            {forum?.tag}
+          </div>
         )}
       </div>
 

@@ -35,14 +35,14 @@ const Banner: React.FC = () => {
           <div></div>
           <div>
             <h3 className="text-base mt-10 leading-7">
-              <span className="border-b-2 border-[#D63484]">Bilgi</span> forumları oluşturup forumunuzu okuyacak insanların o konu
-              hakkında <span className="border-b-2 border-[#D63484]">bilgilenmesini</span> sağla,
+              <span className="border-b-2 border-dashed border-[#D63484]">Bilgi</span> forumları oluşturup forumunuzu okuyacak insanların o konu
+              hakkında <span className="border-b-2 border-dashed border-[#D63484]">bilgilenmesini</span> sağla,
               <br />
-              <span className="border-b-2 border-[#D63484]">Tartışma</span> forumları oluşturup zıt görüşlü insanlarlar{" "}
-              <span className="border-b-2 border-[#D63484]">tartışıp uzlaş</span>,
+              <span className="border-b-2 border-dashed border-[#D63484]">Tartışma</span> forumları oluşturup zıt görüşlü insanlarlar{" "}
+              <span className="border-b-2 border-dashed border-[#D63484]">tartışıp uzlaş</span>,
               <br />
-              <span className="border-b-2 border-[#D63484]">Soru</span> forumları oluşturup insanların{" "}
-              <span className="border-b-2 border-[#d63484]">yardımını al</span>.
+              <span className="border-b-2 border-dashed border-[#D63484]">Soru</span> forumları oluşturup insanların{" "}
+              <span className="border-b-2 border-dashed border-[#d63484]">yardımını al</span>.
             </h3>
             <div className="text-lg mt-5">Bunun için sadece,</div>
             <div className="w-full flex gap-3 mt-5">

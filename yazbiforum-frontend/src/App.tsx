@@ -11,7 +11,7 @@ const App: React.FC<IProps> = ({ children }) => {
   useEffect(() => {
     window.addEventListener("scroll", () => {
       if (window.scrollY == 0) {
-        navRef.current?.classList.remove("inline", "z-50", "border-b", `border-[${Colors.ButtonCardBorder}]`, `bg-[${Colors.BackgroundColor}]`);
+        navRef.current?.classList.remove("fixed", "z-50", "border-b", `border-[${Colors.ButtonCardBorder}]`, `bg-[${Colors.BackgroundColor}]`);
       } else {
         navRef.current?.classList.add("fixed", "z-50", "border-b", `border-[${Colors.ButtonCardBorder}]`, `bg-[${Colors.BackgroundColor}]`);
       }
