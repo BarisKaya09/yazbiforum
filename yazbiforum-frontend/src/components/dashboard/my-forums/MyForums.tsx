@@ -29,7 +29,7 @@ const FilterByTag: React.FC<FilterByTagProps> = ({ setFilterTag }) => {
   }, []);
 
   return (
-    <div className="relative w-[70px] h-full rounded-3xl bg-[#161c32] cursor-pointer shadow-2xl select-none">
+    <div className="relative w-[70px] h-full rounded-3xl bg-[#161c32] cursor-pointer shadow-lg select-none">
       <div
         className="w-full h-full pt-3 flex gap-2 pl-4"
         onClick={() => {
@@ -78,7 +78,7 @@ const FilterByForumType: React.FC<FilterByForumTypeProps> = ({ setFilterByForumT
   const forumsTypes: ForumTypes[] = ["bilgi", "soru", "tartışma"];
 
   return (
-    <div className="relative w-[120px] h-full rounded-3xl bg-[#161c32] cursor-pointer shadow-2xl select-none">
+    <div className="relative w-[120px] h-full rounded-3xl bg-[#161c32] cursor-pointer shadow-lg select-none">
       <div
         className="w-full h-full pt-3 flex gap-2 pl-4"
         onClick={() => {
@@ -144,7 +144,7 @@ const SearchForum: React.FC<SearchForumProps> = ({ setUserForums, setSearching }
     <input
       type="text"
       placeholder="Forum ara..."
-      className="w-[220px] h-full rounded-3xl bg-[#161c32] shadow-2xl select-none px-4 text-md outline-none"
+      className="w-[220px] h-full rounded-3xl bg-[#161c32] shadow-lg select-none px-4 text-md outline-none"
       onChange={searchUserForums}
     />
   );
@@ -197,7 +197,7 @@ const MyForums: React.FC<IProps> = ({ forums }) => {
           <FilterByTag setFilterTag={setFilterTag} />
 
           <NavLink to={"../addforum"} className="w-[200px] h-full">
-            <div className="w-full h-full bg-[#161c32] rounded-3xl flex gap-3 text-sm pt-[12px] pl-5 shadow-2xl">
+            <div className="w-full h-full bg-[#161c32] rounded-3xl flex gap-3 text-sm pt-[12px] pl-5 shadow-lg">
               <div className="w-7 h-7 rounded-full bg-gradient-to-t from-[#16cbdc] to-[#616bda] text-center pt-[5px]">
                 <Icon icon_={faPlus} className="text-sm" />
               </div>

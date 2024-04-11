@@ -63,15 +63,22 @@ const ForumsBody: React.FC<ForumsBodyProps> = ({ userForums, searching }) => {
   return (
     <div className="w-full min-h-[700px] mt-10">
       {searching ? (
-        <ul className="w-full">
+        <ul className="w-full h-full grid grid-cols-2 gap-5">
           <li className="w-full">
             <ForumSkeletonLight />
+          </li>
+          <li>
             <ForumSkeletonLight />
+          </li>
+          <li>
+            <ForumSkeletonLight />
+          </li>
+          <li>
             <ForumSkeletonLight />
           </li>
         </ul>
       ) : (
-        <ul className="w-full h-full grid grid-cols-2 gap-10">
+        <ul className="w-full h-full grid grid-cols-2 gap-5">
           {userForums?.map((forum) => (
             <li className="w-full">
               <LoadAnimate atype="opacity" duration={0}>
@@ -84,7 +91,7 @@ const ForumsBody: React.FC<ForumsBodyProps> = ({ userForums, searching }) => {
                         </LoadAnimate>
                       </h3>
 
-                      <div className="min-w-[40px] h-[20px] text-xs leading-4 border-2 border-emerald-600 cursor-pointer rounded-md text-center px-2">
+                      <div className="min-w-[40px] h-[20px] text-xs leading-4 border-2 border-emerald-600 border-dashed bg-emerald-200 text-emerald-600 cursor-pointer rounded-md text-center px-2">
                         <LoadAnimate atype="skeleton-load" duration={70}>
                           {forum.type_}
                         </LoadAnimate>
