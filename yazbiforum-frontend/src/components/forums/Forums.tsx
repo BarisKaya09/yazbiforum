@@ -111,14 +111,18 @@ const ForumsBody: React.FC<ForumsBodyProps> = ({ userForums, searching }) => {
                           forum.tag.map((t) => (
                             <div className="min-w-[60px] h-[22px]">
                               <LoadAnimate atype="skeleton-load" duration={130}>
-                                <div className="w-full h-full bg-teal-500 px-2 cursor-pointer text-sm text-center rounded-sm leading-5 text-white">{t}</div>
+                                <div className="w-full h-full border-2 border-dashed border-violet-600 text-violet-600 bg-violet-200 px-2 cursor-pointer text-sm text-center rounded-sm leading-4">
+                                  {t}
+                                </div>
                               </LoadAnimate>
                             </div>
                           ))
                         ) : (
                           <div className="min-w-[60px] h-[22px]">
                             <LoadAnimate atype="skeleton-load" duration={150}>
-                              <div className="w-full h-full px-2 cursor-pointer bg-teal-500 text-sm text-center rounded-sm leading-5 text-white">{forum.tag}</div>
+                              <div className="w-full h-full px-2 cursor-pointer border-2 border-dashed border-violet-600 text-violet-600 bg-violet-200 text-sm text-center rounded-sm leading-4">
+                                {forum.tag}
+                              </div>
                             </LoadAnimate>
                           </div>
                         )}
@@ -141,11 +145,6 @@ const ForumsBody: React.FC<ForumsBodyProps> = ({ userForums, searching }) => {
                           </LoadAnimate>
                         </div>
                       </div>
-
-                      {/* <div className="w-1/3 h-full flex gap-2 justify-end text-sm text-teal-500 pt-[2px]"></div> */}
-
-                      {/* <div className="h-full text-sm text-teal-500 pt-[2px]"></div> */}
-                      {/* </div> */}
                     </div>
 
                     <div className="w-full h-[10%] flex justify-between py-1">

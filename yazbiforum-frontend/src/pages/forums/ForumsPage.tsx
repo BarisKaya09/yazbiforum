@@ -40,10 +40,10 @@ const ForumsPages: React.FC = () => {
     window.addEventListener("scroll", () => {
       if (window.scrollY == 0) {
         sideBarRef.current.classList.add("w-full", "h-full");
-        sideBarRef.current.classList.remove("fixed", "z-50", "top-[100px]", "w-[15.2%]", "h-[770px]");
+        sideBarRef.current.classList.remove("fixed", "z-50", "top-[100px]", "w-[15.2%]", "h-[620px]");
       } else {
         sideBarRef.current.classList.remove("w-full", "h-full");
-        sideBarRef.current.classList.add("fixed", "z-50", "top-[100px]", "w-[15.2%]", "h-[740px]");
+        sideBarRef.current.classList.add("fixed", "z-50", "top-[100px]", "w-[15.2%]", "h-[620px]");
       }
     });
   }, [window.scrollY]);
@@ -55,7 +55,7 @@ const ForumsPages: React.FC = () => {
           path="/"
           element={
             <div className="w-full h-full flex gap-20">
-              <div className="w-[19%] h-[770px]">
+              <div className="w-[19%] h-[620px]">
                 <div ref={sideBarRef} className="w-full h-full">
                   <Sidebar setFilterByType={setFilterByType} setFilterByTags={setFilterByTags} filterByTags={filterByTags} filterByType={filterByType} />
                 </div>
