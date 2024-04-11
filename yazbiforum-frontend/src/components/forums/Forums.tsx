@@ -74,7 +74,7 @@ const ForumsBody: React.FC<ForumsBodyProps> = ({ userForums, searching }) => {
         <ul className="w-full">
           {userForums?.map((forum) => (
             <li className="w-full">
-              <LoadAnimate atype="opacity" duration={50}>
+              <LoadAnimate atype="opacity" duration={0}>
                 <NavLink to={`${forum.author}/${forum._id}`}>
                   <div className="w-full min-h-[100px] py-5 flex gap-3 flex-col pl-5 pr-5 border-x shadow-md border-slate-600 rounded-md mb-5 select-none cursor-pointer hover:opacity-80 duration-300">
                     <div className="w-full h-[20%] flex justify-between">
