@@ -41,7 +41,7 @@ const FilterByTag: React.FC<FilterByTagProps> = ({ setFilterTag }) => {
         <Icon icon_={icon} className="text-xs mt-2" />
       </div>
 
-      <div ref={tagsRef} className="absolute hidden w-52 h-[300px] z-40 rounded-xl bg-[#161c32] shadow-2xl overflow-scroll -left-16 top-16">
+      <div ref={tagsRef} className="absolute hidden min-w-52 h-[300px] z-40 rounded-xl bg-[#161c32] shadow-2xl overflow-scroll -left-16 top-16">
         <ul className="w-full h-full">
           <li
             onClick={() => {
