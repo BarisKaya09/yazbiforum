@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import Icon from "../ui/Icon";
 import LoadAnimate from "../LoadAnimate";
@@ -12,10 +12,11 @@ type NavProps = {
   setSearching: React.Dispatch<React.SetStateAction<boolean>>;
 };
 const Nav: React.FC<NavProps> = ({ setUserForums, setSearching }) => {
-  const searchForum = async (e: any) => {
+  const searchForum = async (e: ChangeEvent) => {
+    const value: string = e.target.value as string;
     setSearching(true);
     // eğer e.target.value boş ise tüm forumları getir
-    if (e.target.value == "") {
+    if (value == "") {
       try {
         const data = await ForumService.getAllForums();
         if (data.success) setUserForums(data.data);
@@ -27,7 +28,7 @@ const Nav: React.FC<NavProps> = ({ setUserForums, setSearching }) => {
     }
 
     try {
-      const data = await ForumService.searchForum(e.target.value.trim());
+      const data = await ForumService.searchForum(value.trimEnd());
       if (data.success) {
         setUserForums(data.data);
       }

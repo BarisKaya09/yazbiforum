@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, ChangeEvent } from "react";
 import { NavLink } from "react-router-dom";
 
 import { type ForumBody, type Tags, type ForumTypes } from "../../../types";
@@ -123,16 +123,17 @@ type SearchForumProps = {
   setSearching: React.Dispatch<React.SetStateAction<boolean>>;
 };
 const SearchForum: React.FC<SearchForumProps> = ({ setUserForums, setSearching }) => {
-  const searchUserForums = async (e: any) => {
+  const searchUserForums = async (e: ChangeEvent) => {
+    const value: string = e.target.value as string;
     setSearching(true);
-    if (e.target.value == "") {
+    if (value == "") {
       setUserForums((await getAccountData()).forums);
       setTimeout(() => setSearching(false), 200);
       return;
     }
 
     try {
-      const data = await ForumService.searchUserForum(e.target.value);
+      const data = await ForumService.searchUserForum(value.trimEnd());
       if (data.success) setUserForums(data.data);
       setTimeout(() => setSearching(false), 200);
     } catch (err: any) {

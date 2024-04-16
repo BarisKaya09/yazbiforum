@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 
 import PageTitle from "../ui/PageTitle";
 import { ForumTypes, Tags, OPForumBody } from "../../types";
@@ -61,8 +61,8 @@ const Tag: React.FC<TagProps> = ({ tag, setSelectTag, selectedTag }) => {
           prevState?.has(tag)
             ? new Set([...prevState].filter((x) => x != tag))
             : prevState?.size == 3
-            ? new Set([...(prevState || [])])
-            : new Set([...(prevState || []), tag])
+              ? new Set([...(prevState || [])])
+              : new Set([...(prevState || []), tag])
         );
       }}
       className="min-w-[60px] p-[6px] border-2 border-dotted border-teal-600 bg-teal-200 rounded-lg text-xs text-teal-600 text-center cursor-pointer"
@@ -174,9 +174,10 @@ const AddForum: React.FC = () => {
     spinnerIconRef.current.classList.add("hidden");
   };
 
-  const searchTags = (e: any) => {
-    if (e.target.value == "") return setTagsCache(tags);
-    setTagsCache(tags?.filter((tag) => tag.slice(0, e.target.value.length) == e.target.value));
+  const searchTags = (e: ChangeEvent) => {
+    const value: string = e.target.value as string
+    if (value == "") return setTagsCache(tags);
+    setTagsCache(tags?.filter((tag) => tag.slice(0, value.length) == value.trimEnd()));
     e.preventDefault();
   };
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, ChangeEvent } from "react";
 import { type ForumTypes, type Tags } from "../../types";
 import { getTags } from "../../utils";
 import Icon from "../ui/Icon";
@@ -26,9 +26,10 @@ const Sidebar: React.FC<SidebarProps> = ({ setFilterByTags, setFilterByType, fil
     setFilterByType("hepsi");
   }, [filterByTags, filterByType]);
 
-  const searchTag = (e: any) => {
-    if (e.target.value == "") return setTagsCache(tags);
-    setTagsCache(tags?.filter((tag) => tag.slice(0, e.target.value.length) == e.target.value.trim()));
+  const searchTag = (e: ChangeEvent) => {
+    const value: string = e.target.value as string;
+    if (value == "") return setTagsCache(tags);
+    setTagsCache(tags?.filter((tag) => tag.slice(0, value.length) == value.trimEnd()));
     e.preventDefault();
   };
 
