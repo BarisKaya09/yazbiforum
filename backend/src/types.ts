@@ -1,6 +1,8 @@
 export enum err_codes {
   // eksik içerik
   MISSING_CONTENT = "MISSING_CONTENT",
+  // eksik params
+  MISSING_PARAMS = "MISSING_PARAMS",
   // herhangi bir hata
   ANY_ERR = "ANY_ERR",
 

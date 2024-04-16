@@ -25,7 +25,6 @@ const Forum: React.FC = () => {
         setForum(data.data.forum);
         if (data.data.forum.likes.users.includes(data.data.nickname)) setAlreadyLiked(true);
         else setAlreadyLiked(false);
-      } else {
       }
     } catch (err: any) {
       setForumIsFetchComplated(true);
@@ -41,8 +40,9 @@ const Forum: React.FC = () => {
   }, [forumAuthorAndId]);
 
   const likeForum = async () => {
+    if (!forum) return;
+    //if (alreadyLiked) return;
     try {
-      if (!forum) return;
       const data = await ForumService.likeForum(forum?.author, forum?._id);
       if (data.success) {
         toast.info(data.data);
@@ -52,8 +52,28 @@ const Forum: React.FC = () => {
       }
     } catch (err: any) {
       throw err;
+    } finally {
+      //
     }
   };
+
+  const unlikeForum = async () => {
+    if (!forum) return;
+    if (!alreadyLiked) return;
+    try {
+      const data = await ForumService.unlikeForum(forum?.author, forum?._id);
+      if (data.success) {
+        toast.info(data.data);
+        await setDatas();
+      } else {
+        toast.error(data.data.error.message);
+      }
+    } catch (err: any) {
+      throw err
+    } finally {
+      // 
+    }
+  }
 
   // backend cevap döndükten sonra forum bulunmuyorsa veya silinmişse
   if (!forum) {
@@ -126,7 +146,7 @@ const Forum: React.FC = () => {
         <div className="w-[100px] h-1/3 flex border border-slate-500 rounded-md">
           <div className="w-[60%] h-full text-center leading-6 border-r border-slate-500 text-xs px-1 select-none">{forum?.likes.count} beğeni</div>
           {alreadyLiked ? (
-            <button className="w-[40%] h-full text-center hover:bg-slate-500 duration-300">
+            <button onClick={unlikeForum} className="w-[40%] h-full text-center hover:bg-slate-500 duration-300">
               <Icon icon_={faBan} />
             </button>
           ) : (

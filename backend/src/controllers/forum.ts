@@ -157,10 +157,10 @@ export const likeForum: express.Handler = async (req: express.Request, res: expr
   const forumOwnerNickname = req.params.forumOwner;
   const nickname = req.cookies.nickname;
 
-  if (!_id) {
+  if (!_id || !forumOwnerNickname) {
     res.status(402).json({
       success: false,
-      data: { error: { message: "Eksik bilgi gönderildi!!!", code: err_codes.MISSING_CONTENT } },
+      data: { error: { message: "Eksik params gönderildi!", code: err_codes.MISSING_PARAMS } },
     });
     return;
   }
@@ -223,6 +223,51 @@ export const likeForum: express.Handler = async (req: express.Request, res: expr
   }
   res.status(200).json({ success: true, data: "Forum Beğenildi" });
 };
+
+export const unlikeForum: express.Handler = async (req: express.Request, res: express.Response) => {
+  const _id = req.params._id;
+  const forumOwnerNickname = req.params.forumOwner;
+  const nickname = req.cookies.nickname; // unliked user nickname
+  if (!_id || !forumOwnerNickname) {
+    res.status(402).json({ success: false, data: { error: { message: "Eksik params gönderildi.", code: err_codes.MISSING_PARAMS } } })
+    return
+  }
+
+  const repo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
+  try {
+    const forumOwner = await repo.findOne({ nickname: forumOwnerNickname });
+    if (!forumOwner) {
+      res.status(402).json({ success: false, data: { error: { message: "Bu kullanıcı adına sahip bir forum bulunamadı!", code: err_codes.USER_NOT_EXIST } } });
+      return
+    }
+    const forum = forumOwner.forums.find((forum) => forum._id == _id);
+    if (!forum) {
+      res.status(402).json({ success: false, data: { error: { message: "Bu Id'ye ait forum bulunamadı!", code: err_codes.FORUM_NOT_EXIST } } });
+      return;
+    }
+
+    forum.likes.count -= 1;
+    forum.likes.users = forum.likes.users.filter(user => user != nickname);
+    const newForums = forumOwner?.forums.filter((forum) => forum._id != _id);
+    newForums?.push(forum)
+
+    await repo.updateOne({ nickname: forum.author }, { $set: { forums: newForums } });
+
+    // update interactions
+    const user = await repo.findOne({ nickname });
+    if (!user) {
+      res.status(401).json({ success: false, data: { error: { message: "Kullanıcı bulunamadı!", code: err_codes.USER_NOT_EXIST } } });
+      return;
+    }
+    user.interactions.likedForums = user?.interactions.likedForums.filter((ls) => ls._id != _id);
+    await repo.updateOne({ nickname }, { $set: { interactions: user.interactions } });
+    res.status(200).json({ success: true, data: "Beğeni geri alındı." });
+  } catch (err: any) {
+    res.status(400).json(anyError(err));
+  } finally {
+    await repo.close()
+  }
+}
 
 export const deleteForum: express.Handler = async (req: express.Request, res: express.Response) => {
   const _id = req.params._id;

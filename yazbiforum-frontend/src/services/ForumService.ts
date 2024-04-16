@@ -11,6 +11,7 @@ import { type ForumCountByTagsT } from "../components/dashboard/Home";
 export default class ForumService {
   private static readonly create_forum_endpoint: string = import.meta.env.VITE_CREATE_FORUM_ENDPOINT;
   private static readonly like_forum_endpoint: string = import.meta.env.VITE_LIKE_FORUM_ENDPOINT;
+  private static readonly unlike_forum_endpoint: string = import.meta.env.VITE_UNLIKE_FORUM_ENDPOINT;
   private static readonly delete_forum_endpoint: string = import.meta.env.VITE_DELETE_FORUM_ENDPOINT;
   private static readonly create_comment_endpoint: string = import.meta.env.VITE_CREATE_COMMENT_ENDPOINT;
   private static readonly update_forum_endpoint: string = import.meta.env.VITE_UPDATE_FORUM_ENDPOINT;
@@ -57,6 +58,21 @@ export default class ForumService {
         success: false,
         data: err.response.data.data,
       } as UnsuccessfulResponse;
+    }
+  }
+
+  static async unlikeForum(owner: string, id: string): Promise<SuccessResponse<string> | UnsuccessfulResponse> {
+    try {
+      const { data } = await axios.post<SuccessResponse<string> | UnsuccessfulResponse>(this.unlike_forum_endpoint + owner + "/" + id, {}, { withCredentials: true })
+      return {
+        success: true,
+        data: data.data
+      } as SuccessResponse<string>
+    } catch (err: any) {
+      return {
+        success: false,
+        data: err.response.data.data
+      } as UnsuccessfulResponse
     }
   }
 
