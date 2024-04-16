@@ -27,7 +27,7 @@ const Nav: React.FC<NavProps> = ({ setUserForums, setSearching }) => {
     }
 
     try {
-      const data = await ForumService.searchForum(e.target.value);
+      const data = await ForumService.searchForum(e.target.value.trim());
       if (data.success) {
         setUserForums(data.data);
       }

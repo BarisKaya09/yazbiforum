@@ -28,7 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setFilterByTags, setFilterByType, fil
 
   const searchTag = (e: any) => {
     if (e.target.value == "") return setTagsCache(tags);
-    setTagsCache(tags?.filter((tag) => tag.slice(0, e.target.value.length) == e.target.value));
+    setTagsCache(tags?.filter((tag) => tag.slice(0, e.target.value.length) == e.target.value.trim()));
     e.preventDefault();
   };
 
