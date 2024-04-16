@@ -18,13 +18,14 @@ app.use(
     origin: true,
   })
 );
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use((req, res, next) => {
   const allowedOrigins = ["*"];
   const origin = req.headers.origin;
-
+  console.log("origin middleware")
   if (allowedOrigins.includes(origin as string)) {
     res.header("Access-Control-Allow-Origin", origin);
   }
