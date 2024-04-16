@@ -123,8 +123,8 @@ const AddForum: React.FC = () => {
   const [tags, setTags] = useState<Tags[]>();
   const [tagsCache, setTagsCache] = useState<Tags[]>();
 
-  const [title, setTitle] = useState<string>();
-  const [content, setContent] = useState<string>();
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
   const [selectedTag, setSelectTag] = useState<Set<Tags>>();
   const [forumType, setForumType] = useState<ForumTypes>();
 
@@ -145,15 +145,15 @@ const AddForum: React.FC = () => {
   // }, [title, content, selectedTag, forumType]);
 
   const addForum = async () => {
-    if (!title || !content || !selectedTag || selectedTag.size == 0 || !forumType) {
+    if (!title.trim() || !content.trim() || !selectedTag || selectedTag.size == 0 || !forumType) {
       toast.error("Lütfen tüm alanları doldurun!");
       return;
     }
 
     const forum: OPForumBody = {
       tag: [...selectedTag],
-      title,
-      content,
+      title: title.trim(),
+      content: content.trim(),
       type_: forumType,
     };
 
