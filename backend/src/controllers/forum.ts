@@ -310,18 +310,16 @@ export const deleteForum: express.Handler = async (req: express.Request, res: ex
 };
 
 export const createComment: express.Handler = async (req: express.Request, res: express.Response) => {
-  const { forumOwner, _id, author } = req.params;
+  const { forumOwner, _id } = req.params;
   const { content } = req.body;
-  if (!forumOwner || !_id || !author || !content) {
+  if (!forumOwner || !_id || !content) {
     res.status(402).json({
       success: false,
       data: { error: { message: "Eksik param gönderildi!!!", code: err_codes.MISSING_PARAMS } },
     });
     return;
   }
-
-  console.log(author)
-
+  const author = req.cookies.nickname
   const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   try {
     const user: RegisterBody | null = await userRepo.findOne({ nickname: forumOwner });
@@ -415,7 +413,7 @@ export const deleteComment: express.Handler = async (req: express.Request, res: 
 
     forum.comments = forum.comments.filter(comment => comment._id != commentID)
     const updatedForums = [...forumOwnerData.forums.filter(forum => forum._id != _id), forum]
-    await repo.updateOne({ nickname: forumOwnerData }, { $set: { forums: updatedForums } })
+    await repo.updateOne({ nickname: forumOwnerData.nickname }, { $set: { forums: updatedForums } })
 
     const nickname = req.cookies.nickname
     const commentOwner = await repo.findOne({ nickname })

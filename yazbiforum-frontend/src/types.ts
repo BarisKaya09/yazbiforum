@@ -82,6 +82,7 @@ export type Tags =
   | "spor";
 
 export type CommentBody = {
+  _id: string;
   author: string;
   content: string;
   releaseDate: string;

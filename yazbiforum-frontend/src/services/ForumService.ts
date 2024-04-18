@@ -14,6 +14,7 @@ export default class ForumService {
   private static readonly unlike_forum_endpoint: string = import.meta.env.VITE_UNLIKE_FORUM_ENDPOINT;
   private static readonly delete_forum_endpoint: string = import.meta.env.VITE_DELETE_FORUM_ENDPOINT;
   private static readonly create_comment_endpoint: string = import.meta.env.VITE_CREATE_COMMENT_ENDPOINT;
+  private static readonly delete_comment_endpoint: string = import.meta.env.VITE_DELETE_COMMENT_ENDPOINT;
   private static readonly update_forum_endpoint: string = import.meta.env.VITE_UPDATE_FORUM_ENDPOINT;
   private static readonly get_all_forums_endpoint: string = import.meta.env.VITE_GET_ALL_FORUMS_ENDPOINT;
   private static readonly get_forum_count_by_tags_endpoint: string = import.meta.env.VITE_GET_FORUM_COUNT_BY_TAGS_ENDPOINT;
@@ -119,6 +120,22 @@ export default class ForumService {
         success: false,
         data: err.response.data.data,
       } as UnsuccessfulResponse;
+    }
+  }
+
+  static async deleteComment(forumOwner: string, id: string, commentID: string): Promise<SuccessResponse<string> | UnsuccessfulResponse> {
+    try {
+      const { data } = await axios.post(this.delete_comment_endpoint + forumOwner + "/" + id + "/" + commentID, {}, { withCredentials: true })
+
+      return {
+        success: true,
+        data: data.data
+      } as SuccessResponse<string>
+    } catch (err: any) {
+      return {
+        success: false,
+        data: err.response.data.data
+      } as UnsuccessfulResponse
     }
   }
 
