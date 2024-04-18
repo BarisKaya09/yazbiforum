@@ -1,6 +1,6 @@
 import express from "express";
 import requireAuth from "../middlewares/requireAuth";
-import { createForum, likeForum, deleteForum, createComment, updateForum, getTags, unlikeForum } from "../controllers/forum";
+import { createForum, likeForum, deleteForum, createComment, deleteComment, updateForum, getTags, unlikeForum } from "../controllers/forum";
 import {
   getFilteredForum,
   getAllForums,
@@ -15,10 +15,15 @@ import {
 const router: express.Router = express.Router();
 
 router.post("/createForum", requireAuth, createForum);
+
 router.post("/likeForum/:forumOwner/:_id", requireAuth, likeForum);
 router.post("/unlikeForum/:forumOwner/:_id", requireAuth, unlikeForum);
+
 router.post("/deleteForum/:_id", requireAuth, deleteForum);
+
 router.post("/createComment/:forumOwner/:_id", requireAuth, createComment);
+router.post("/deleteComment/:forumOwner/:_id/:commentID", requireAuth, deleteComment)
+
 router.post("/updateForum/:_id", requireAuth, updateForum);
 router.get("/getTags", getTags);
 

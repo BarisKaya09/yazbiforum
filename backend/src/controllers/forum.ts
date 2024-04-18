@@ -1,5 +1,5 @@
 import express from "express";
-import { err_codes } from "../types";
+import { err_codes, status_codes } from "../types";
 import tags from "../data/tags";
 import { anyError } from "../utils";
 import { MongoDBUserRepository } from "../repository/mongodb";
@@ -97,7 +97,6 @@ export const createForum: express.Handler = async (req: express.Request, res: ex
     });
 
     if (!r) {
-      console.log("dwadwad");
       res.status(402).json({
         success: false,
         data: { error: { message: "Geçersiz forum tagi!!!", err_codes: err_codes.INVALID_FORUM_TAG } },
@@ -311,17 +310,17 @@ export const deleteForum: express.Handler = async (req: express.Request, res: ex
 };
 
 export const createComment: express.Handler = async (req: express.Request, res: express.Response) => {
-  const forumOwner = req.params.forumOwner;
-  const _id = req.params._id;
-  const author = req.cookies.nickname;
+  const { forumOwner, _id, author } = req.params;
   const { content } = req.body;
   if (!forumOwner || !_id || !author || !content) {
     res.status(402).json({
       success: false,
-      data: { error: { message: "Eksik içerik gönderildi!!!", code: err_codes.MISSING_CONTENT } },
+      data: { error: { message: "Eksik param gönderildi!!!", code: err_codes.MISSING_PARAMS } },
     });
     return;
   }
+
+  console.log(author)
 
   const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
   try {
@@ -388,6 +387,53 @@ export const createComment: express.Handler = async (req: express.Request, res: 
 
   res.status(200).json({ success: true, data: "Yorum eklendi." });
 };
+
+export const deleteComment: express.Handler = async (req: express.Request, res: express.Response) => {
+  const { forumOwner, _id, commentID } = req.params
+  if (!forumOwner || !_id || !commentID) {
+    res.status(status_codes.BAD_REQUEST).json({ success: false, data: { error: { message: "Eksik param gönderildi!", code: err_codes.MISSING_PARAMS } } })
+    return
+  }
+
+  const repo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" })
+  try {
+    const forumOwnerData = await repo.findOne({ nickname: forumOwner })
+    if (!forumOwnerData) {
+      res.
+        status(status_codes.NOT_FOUND).
+        json({ success: false, data: { error: { message: "Forum sahibine ait hesap bulunamadı!", code: err_codes.USER_NOT_EXIST } } })
+      return
+    }
+
+    const forum = forumOwnerData.forums.find(forum => forum._id == _id)
+    if (!forum) {
+      res
+        .status(status_codes.NOT_FOUND)
+        .json({ success: false, data: { error: { message: "Gönderilen id'ye ait forum bulunamadı!", code: err_codes.FORUM_NOT_EXIST } } })
+      return
+    }
+
+    forum.comments = forum.comments.filter(comment => comment._id != commentID)
+    const updatedForums = [...forumOwnerData.forums.filter(forum => forum._id != _id), forum]
+    await repo.updateOne({ nickname: forumOwnerData }, { $set: { forums: updatedForums } })
+
+    const nickname = req.cookies.nickname
+    const commentOwner = await repo.findOne({ nickname })
+    if (!commentOwner) {
+      res
+        .status(status_codes.NOT_FOUND)
+        .json({ success: false, data: { error: { message: "Yorum sahibi bulunamadı!", code: err_codes.USER_NOT_EXIST } } })
+      return
+    }
+
+    const newCommentedInteractions = commentOwner.interactions.commented.filter(c => c._id != _id)
+    const newUserInteractions: Interactions = { likedForums: commentOwner.interactions.likedForums, commented: newCommentedInteractions }
+    await repo.updateOne({ nickname }, { $set: { interactions: newUserInteractions } })
+    res.status(status_codes.OK).json({ success: true, data: "Yorum silindi" })
+  } catch (err: any) {
+    res.status(status_codes.INTERNAL_SERVER_ERROR).json(anyError(err))
+  }
+}
 
 type UpdateForumBody = {
   tag: Tags | Tags[];
