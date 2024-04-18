@@ -32,3 +32,22 @@ export enum err_codes {
   // likes
   ALREADY_LIKED = "ALL_READY_LIKED",
 }
+
+export enum status_codes {
+  // success codes
+  OK = 200,
+
+  // unsuccess codes
+  BAD_REQUEST = 400,
+  UN_AUTHORİZED = 401,
+  NOT_FOUND = 404,
+  INTERNAL_SERVER_ERROR = 500
+}
+
+
+
+
+
+
+
+
