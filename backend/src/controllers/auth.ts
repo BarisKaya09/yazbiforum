@@ -20,6 +20,8 @@ export type Interactions = {
   }[];
 };
 
+
+
 export type RegisterBody = {
   name: string;
   surname: string;
