@@ -6,7 +6,6 @@ import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 
 const Banner: React.FC = () => {
   const [isLoggedin, setIsLoggedin] = useState<boolean>(false);
-
   useEffect(() => {
     (async () => setIsLoggedin(await AuthService.isLoggedin()))();
   }, []);
