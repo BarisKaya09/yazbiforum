@@ -38,39 +38,35 @@
 
 - Backend
 
-  - <div style="">
-      <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">typescript</span>
-      <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">bcrypt</span>
-      <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">chalk</span>
-      <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">chalk</span>
-      <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">cookie-parser</span>
-      <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">cors</span>
-      <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">dotenv</span>
-      <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">express</span>
-      <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">jsonwebtoken</span>
-      <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">mongodb</span>
-      <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">nodemon</span>
-      <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">uuid</span>
-      <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">validator</span>
-    </div>
+  - <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">typescript</span>
+  - <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">bcrypt</span>
+  - <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">chalk</span>
+  - <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">chalk</span>
+  - <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">cookie-parser</span>
+  - <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">cors</span>
+  - <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">dotenv</span>
+  - <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">express</span>
+  - <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">jsonwebtoken</span>
+  - <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">mongodb</span>
+  - <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">nodemon</span>
+  - <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">uuid</span>
+  - <span style="background-color: #f9a8d4; color:#be123c; border:2px solid #be123c; border-style: dotted; border-radius: 6px; padding: 4px">validator</span>
 
 - Frontend
 
-  - <div style="">
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">typescript</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">axios</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">chart.js</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">crypto</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">localforage</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">match-sorter</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding:4px">react-fontawesome</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">react</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">react-chartjs</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">react-dom</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">react-dom</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">react-router</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">react-scripts</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">react-toastify</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">sort-by</span>
-      <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">validator</span>
-    </div>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">typescript</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">axios</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">chart.js</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">crypto</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">localforage</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">match-sorter</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding:4px">react-fontawesome</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">react</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">react-chartjs</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">react-dom</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">react-dom</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">react-router</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">react-scripts</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">react-toastify</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">sort-by</span>
+  - <span style="background-color: #a7f3d0; color:#059669; border:2px solid #059669; border-style: dotted; border-radius: 6px; padding: 4px">validator</span>
