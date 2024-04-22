@@ -1,18 +1,15 @@
 import express from "express";
-import { anyError } from "../utils";
 import { type ForumTypes, type ForumBody, DISCUSSION, QUESTION, INFORMATION, type Tags } from "./forum";
 
 import { MongoDBUserRepository } from "../repository/mongodb";
-import { err_codes } from "../types";
+import { err_codes, status_codes } from "../types";
 import tags from "../data/tags";
+import response, { INVALID_FORUM_TYPE, ANY_ERR, USER_NOT_EXIST, FORUM_NOT_EXIST } from "../lib/response";
 
 export const getFilteredForum: express.Handler = async (req: express.Request, res: express.Response) => {
   const ftype: ForumTypes = req.params.forumType as ForumTypes;
   if (ftype != DISCUSSION && ftype != QUESTION && ftype != INFORMATION) {
-    res.status(402).json({
-      success: false,
-      data: { error: { message: "Geçersiz forum tipi", code: err_codes.INVALID_FORUM_TYPE } },
-    });
+    response(res).unsuccess(status_codes.BAD_REQUEST, INVALID_FORUM_TYPE());
     return;
   }
 
@@ -24,9 +21,9 @@ export const getFilteredForum: express.Handler = async (req: express.Request, re
       .filter((x: any) => x.length)[0]
       .filter((x: any) => x.type_ == ftype);
 
-    res.status(200).json({ success: true, data: filteredForums });
+    response(res).success(status_codes.OK, filteredForums);
   } catch (err) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
@@ -37,9 +34,9 @@ export const getAllForums: express.Handler = async (req: express.Request, res: e
   try {
     const allForums = await userRepo.find({});
     const forums = (await allForums.toArray()).map((x) => x.forums).filter((x) => x.length)[0];
-    res.status(200).json({ success: true, data: forums });
+    response(res).success(status_codes.OK, forums);
   } catch (err) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
@@ -65,9 +62,9 @@ export const getForumCountByTags: express.Handler = async (req: express.Request,
         index: tags.findIndex((x) => x.tag_name == tag),
       });
     }
-    res.status(200).json({ success: true, data });
+    response(res).success(status_codes.OK, data);
   } catch (err) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
@@ -80,9 +77,9 @@ export const getTotalLikes: express.Handler = async (req: express.Request, res: 
     let totalLikes: number = 0;
     const user = await userRepo.findOne({ nickname });
     user?.forums.forEach((x) => (totalLikes += x.likes.count));
-    res.status(200).json({ success: true, data: totalLikes });
+    response(res).success(status_codes.OK, totalLikes);
   } catch (err) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
@@ -94,24 +91,18 @@ export const getForumById: express.Handler = async (req: express.Request, res: e
   try {
     const forumOwner = await userRepo.findOne({ nickname: author });
     if (!forumOwner) {
-      res.status(402).json({
-        success: false,
-        data: { error: { message: "Böyle bir kullanıcı bulunmamakta!", code: err_codes.USER_NOT_EXIST } },
-      });
+      response(res).unsuccess(status_codes.NOT_FOUND, USER_NOT_EXIST("Foruma ait kullanıcı bulunamadı!"));
       return;
     }
 
     const forum = forumOwner?.forums.find((forum) => forum._id == id);
     if (!forum) {
-      res.status(402).json({
-        success: false,
-        data: { error: { message: `${id} Id'ye ait forum bulunmamakta!`, code: err_codes.FORUM_NOT_EXIST } },
-      });
+      response(res).unsuccess(status_codes.NOT_FOUND, FORUM_NOT_EXIST(id));
       return;
     }
-    res.status(200).json({ success: true, data: { nickname: req.cookies.nickname as string, forum } });
+    response(res).success(status_codes.OK, { nickname: req.cookies.nickname as string, forum });
   } catch (err) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
@@ -126,21 +117,18 @@ export const getUserForumById: express.Handler = async (req: express.Request, re
     const userRepo = MongoDBUserRepository(process.env.MONGODB_URI as string, { db: "yazbiforum", collection: "users" });
     const user = await userRepo.findOne({ nickname });
     if (!user) {
-      res.status(402).json({ success: false, data: { error: { message: "Kullanıcı bulunamadı", code: err_codes.USER_NOT_EXIST } } });
+      response(res).unsuccess(status_codes.NOT_FOUND, USER_NOT_EXIST());
       return;
     }
     const userForum = user?.forums.find((forum) => forum._id == id);
     if (!userForum) {
-      res.status(402).json({
-        success: false,
-        data: { error: { message: `${id} Id'ye ait forum bulunmamakta!`, code: err_codes.FORUM_NOT_EXIST } },
-      });
+      response(res).unsuccess(status_codes.NOT_FOUND, FORUM_NOT_EXIST(id));
       return;
     }
 
-    res.status(200).json({ success: true, data: userForum });
+    response(res).success(status_codes.OK, userForum);
   } catch (err) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
@@ -155,9 +143,9 @@ export const searchForum: express.Handler = async (req: express.Request, res: ex
     const forumsCursor = await userRepo.find({});
     const forums = (await forumsCursor.toArray()).map((x) => x.forums).filter((x) => x.length)[0];
     const searchedForums = forums.filter((x: ForumBody) => x.title.toLowerCase().slice(0, searchArg.length) == searchArg.toLowerCase());
-    res.status(200).json({ success: true, data: searchedForums });
+    response(res).success(status_codes.OK, searchedForums);
   } catch (err: any) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
@@ -173,9 +161,9 @@ export const searchUserForum: express.Handler = async (req: express.Request, res
   try {
     const user = await userRepo.findOne({ nickname });
     const searchedForums = user?.forums.filter((x) => x.title.toLowerCase().slice(0, searchArg.length) == searchArg.toLowerCase());
-    res.status(200).json({ success: true, data: searchedForums });
+    response(res).success(status_codes.OK, searchedForums);
   } catch (err: any) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }

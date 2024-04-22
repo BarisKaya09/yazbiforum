@@ -1,9 +1,9 @@
 import express from "express";
-import { anyError, comparePassword, hashPassword } from "../utils";
-import { RegisterBody } from "./auth";
-import { err_codes } from "../types";
+import { status_codes } from "../types";
 import validator from "validator";
 import { MongoDBUserRepository } from "../repository/mongodb";
+import response, { ANY_ERR, INVALID_EMAIL_FORMAT, INVALID_PASSWORD_LENGTH, MISSING_CONTENT, NO_CHANGES_WERE_MADE, USER_NOT_EXIST } from "../lib/response";
+import { comparePassword, hashPassword } from "../utils";
 
 export const getAccountData = async (req: express.Request, res: express.Response) => {
   const nickname = req.cookies.nickname;
@@ -12,20 +12,12 @@ export const getAccountData = async (req: express.Request, res: express.Response
   try {
     const user = await userRepo.findOne({ nickname });
     if (!user) {
-      res.status(402).json({
-        success: false,
-        data: {
-          error: {
-            message: "Bu kullanıcı adına kayıtlı kullanıcı mevcut değil!",
-            code: err_codes.USER_NOT_EXIST,
-          },
-        },
-      });
+      response(res).unsuccess(status_codes.NOT_FOUND, USER_NOT_EXIST());
       return;
     }
-    res.status(200).json({ success: true, data: { ...user, password: null } });
+    response(res).success(status_codes.OK, { ...user, password: null });
   } catch (err) {
-    res.status(400).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
@@ -42,14 +34,14 @@ export const updateNameSurname: express.Handler = async (req: express.Request, r
   const nickname = req.cookies.nickname;
 
   if (!name || !surname) {
-    res.status(402).json({ success: false, data: { error: { message: "İsim veya Soyisim bulunamadı!", code: err_codes.MISSING_CONTENT } } });
+    response(res).unsuccess(status_codes.BAD_REQUEST, MISSING_CONTENT());
     return;
   }
 
   try {
     const user = await userRepo.findOne({ nickname });
     if (!user) {
-      res.status(402).json({ success: false, data: { error: { message: "Kullanıcı bulunamadı!", code: err_codes.USER_NOT_EXIST } } });
+      response(res).unsuccess(status_codes.NOT_FOUND, USER_NOT_EXIST());
       return;
     }
 
@@ -58,18 +50,15 @@ export const updateNameSurname: express.Handler = async (req: express.Request, r
     if (surname && surname == user.surname) nomodif.push(surname);
 
     if (nomodif.length >= 2) {
-      res.status(402).json({ success: false, data: { error: { message: "Değişiklik Yapılmadı!", code: err_codes.NO_CHANGES_WERE_MADE } } });
+      response(res).unsuccess(status_codes.BAD_REQUEST, NO_CHANGES_WERE_MADE());
       return;
     }
 
     await userRepo.updateOne({ nickname }, { $set: { name: !name ? user.name : name, surname: !surname ? user.surname : surname } });
 
-    res.status(200).json({
-      success: true,
-      data: "İsim Soyisim güncellendi.",
-    });
+    response(res).success(status_codes.OK, "İsim Soyisim güncellendi.");
   } catch (err: any) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
@@ -85,19 +74,19 @@ export const updateNickname: express.Handler = async (req: express.Request, res:
   const user_nickname = req.cookies.nickname;
 
   if (!nickname) {
-    res.status(402).json({ success: false, data: { error: { message: "Kullanıcı adı bulunamdı!!", code: err_codes.MISSING_CONTENT } } });
+    response(res).unsuccess(status_codes.BAD_REQUEST, MISSING_CONTENT());
     return;
   }
 
   try {
     const user = await userRepo.findOne({ nickname: user_nickname });
     if (!user) {
-      res.status(402).json({ success: false, data: { error: { message: "Kullanıcı bulunamadı!", code: err_codes.USER_NOT_EXIST } } });
+      response(res).unsuccess(status_codes.NOT_FOUND, USER_NOT_EXIST());
       return;
     }
 
     if (nickname == user.nickname) {
-      res.status(402).json({ success: false, data: { error: { message: "Değişiklik yapılmadı!", code: err_codes.NO_CHANGES_WERE_MADE } } });
+      response(res).unsuccess(status_codes.BAD_REQUEST, NO_CHANGES_WERE_MADE());
       return;
     }
 
@@ -108,9 +97,9 @@ export const updateNickname: express.Handler = async (req: express.Request, res:
     await userRepo.updateOne({ nickname: user_nickname }, { $set: { nickname: nickname, forums: updatedForums } });
     res.cookie("nickname", nickname, { httpOnly: true, maxAge: 3600000, secure: true });
 
-    res.status(200).json({ success: true, data: "Kullancı adı güncellendi." });
+    response(res).success(status_codes.OK, "Kullancı adı güncellendi.");
   } catch (err: any) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
@@ -126,26 +115,26 @@ export const updateDateOfBirth: express.Handler = async (req: express.Request, r
   const nickname = req.cookies.nickname;
 
   if (!dateOfBirth) {
-    res.status(402).json({ success: false, data: { error: { message: "Doğtum tarihi bulunamadı!", code: err_codes.MISSING_CONTENT } } });
+    response(res).unsuccess(status_codes.BAD_REQUEST, MISSING_CONTENT());
     return;
   }
 
   try {
     const user = await userRepo.findOne({ nickname });
     if (!user) {
-      res.status(402).json({ success: false, data: { error: { message: "Kullanıcı bulunamadı!", code: err_codes.USER_NOT_EXIST } } });
+      response(res).unsuccess(status_codes.NOT_FOUND, USER_NOT_EXIST());
       return;
     }
 
     if (user.age == dateOfBirth) {
-      res.status(402).json({ success: false, data: { error: { message: "Değişiklik Yapılmadı!", code: err_codes.NO_CHANGES_WERE_MADE } } });
+      response(res).unsuccess(status_codes.BAD_REQUEST, NO_CHANGES_WERE_MADE());
       return;
     }
 
     await userRepo.updateOne({ nickname: user.nickname }, { $set: { age: dateOfBirth } });
-    res.status(200).json({ success: true, data: "Doğum tarihi güncellendi." });
+    response(res).success(status_codes.OK, "Doğum tarihi güncellendi.");
   } catch (err: any) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
@@ -161,34 +150,31 @@ export const updateEmail: express.Handler = async (req: express.Request, res: ex
   const nickname = req.cookies.nickname;
 
   if (!email) {
-    res.status(402).json({ success: false, data: { error: { message: "Email adresi bulunamadı!", code: err_codes.MISSING_CONTENT } } });
+    response(res).unsuccess(status_codes.BAD_REQUEST, MISSING_CONTENT());
     return;
   }
 
   if (!validator.isEmail(email)) {
-    res.status(402).json({
-      success: false,
-      data: { error: { message: "Lütfen uygun email formatı girin!", code: err_codes.INVALID_EMAIL_FORMAT } },
-    });
+    response(res).unsuccess(status_codes.BAD_REQUEST, INVALID_EMAIL_FORMAT());
     return;
   }
 
   try {
     const user = await userRepo.findOne({ nickname });
     if (!user) {
-      res.status(402).json({ success: false, data: { error: { message: "Kullanıcı bulunamadı!", code: err_codes.USER_NOT_EXIST } } });
+      response(res).unsuccess(status_codes.NOT_FOUND, USER_NOT_EXIST());
       return;
     }
 
     if (user.email == email) {
-      res.status(402).json({ success: false, data: { error: { message: "Değişiklik yapılmadı!", code: err_codes.NO_CHANGES_WERE_MADE } } });
+      response(res).unsuccess(status_codes.BAD_REQUEST, NO_CHANGES_WERE_MADE());
       return;
     }
 
     await userRepo.updateOne({ nickname }, { $set: { email: email } });
-    res.status(200).json({ success: true, data: "Email adresi güncellendi." });
+    response(res).success(status_codes.OK, "Email adresi güncellendi.");
   } catch (err: any) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
@@ -201,21 +187,21 @@ export const passwordIsItCorrect: express.Handler = async (req: express.Request,
   const nickname = req.cookies.nickname;
 
   if (!password) {
-    res.status(402).json({ success: false, data: { error: { message: "Şifre bulunamadı!", code: err_codes.MISSING_CONTENT } } });
+    response(res).unsuccess(status_codes.BAD_REQUEST, MISSING_CONTENT());
     return;
   }
 
   try {
     const user = await userRepo.findOne({ nickname });
     if (!user) {
-      res.status(402).json({ success: false, data: { error: { message: "Kullanıcı bulunamadı!", code: err_codes.USER_NOT_EXIST } } });
+      response(res).unsuccess(status_codes.NOT_FOUND, USER_NOT_EXIST());
       return;
     }
 
     const data = await comparePassword(password, user.password);
-    res.status(200).json({ success: true, data: { passwordIsItCorrect: data } });
+    response(res).success(status_codes.OK, { passwordIsItCorrect: data });
   } catch (err: any) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
@@ -231,38 +217,33 @@ export const updatePassword: express.Handler = async (req: express.Request, res:
   const nickname = req.cookies.nickname;
 
   if (!password) {
-    res.status(402).json({ success: false, data: { error: { message: "Şifre bulunamadı!", code: err_codes.MISSING_CONTENT } } });
+    response(res).unsuccess(status_codes.BAD_REQUEST, MISSING_CONTENT());
     return;
   }
 
   if (password.length <= 7) {
-    res.status(422).json({
-      success: false,
-      data: {
-        error: { message: "Lütfen şifrenizi 7 karakterden fazla girin!", code: err_codes.INVALID_PASSWORD_LENGTH },
-      },
-    });
+    response(res).unsuccess(status_codes.BAD_REQUEST, INVALID_PASSWORD_LENGTH());
     return;
   }
 
   try {
     const user = await userRepo.findOne({ nickname });
     if (!user) {
-      res.status(402).json({ success: false, data: { error: { message: "Kullanıcı bulunamadı!", code: err_codes.USER_NOT_EXIST } } });
+      response(res).unsuccess(status_codes.NOT_FOUND, USER_NOT_EXIST());
       return;
     }
 
     // eğer şifre eskisi ile aynıysa
     if (await comparePassword(password, user.password)) {
-      res.status(402).json({ success: false, data: { error: { message: "Değişiklik yapılmadı!", code: err_codes.NO_CHANGES_WERE_MADE } } });
+      response(res).unsuccess(status_codes.BAD_REQUEST, NO_CHANGES_WERE_MADE());
       return;
     }
 
     await userRepo.updateOne({ nickname: user.nickname }, { $set: { password: await hashPassword(password, 10) } });
 
-    res.status(200).json({ success: true, data: "Şifre güncellendi." });
+    response(res).success(status_codes.OK, "Şifre güncellendi.");
   } catch (err: any) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }

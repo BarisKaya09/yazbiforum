@@ -3,7 +3,7 @@ import { type ForumBody } from "../../types";
 import PageTitle from "../ui/PageTitle";
 import Icon from "../ui/Icon";
 import { faBan, faExclamation, faSpinner, faThumbsUp, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import ForumService from "../../services/ForumService";
 
 const Forum: React.FC = () => {
@@ -69,11 +69,11 @@ const Forum: React.FC = () => {
         toast.error(data.data.error.message);
       }
     } catch (err: any) {
-      throw err
+      throw err;
     } finally {
-      // 
+      //
     }
-  }
+  };
 
   // backend cevap döndükten sonra forum bulunmuyorsa veya silinmişse
   if (!forum) {
@@ -158,6 +158,8 @@ const Forum: React.FC = () => {
       </div>
 
       <Comments forum={forum} setDatas={setDatas} />
+
+      <ToastContainer />
     </div>
   );
 };
@@ -202,17 +204,17 @@ const Comments: React.FC<CommentsProps> = ({ forum, setDatas }) => {
   const deleteComment = async (commentID: string) => {
     if (!forum) return;
     try {
-      const data = await ForumService.deleteComment(forum.author, forum._id, commentID)
+      const data = await ForumService.deleteComment(forum.author, forum._id, commentID);
       if (data.success) {
-        toast.success(data.data)
-        await setDatas()
+        toast.success(data.data);
+        await setDatas();
       } else {
-        toast.error(data.data.error.message)
+        toast.error(data.data.error.message);
       }
     } catch (err: any) {
-      throw err
+      throw err;
     }
-  }
+  };
 
   return (
     <div className="w-full py-4 mb-40">
@@ -245,7 +247,7 @@ const Comments: React.FC<CommentsProps> = ({ forum, setDatas }) => {
 
       {forum?.comments.reverse().map((f) => (
         <div className="w-full min-h-[100px] p-5 flex flex-col gap-2">
-          <div className='w-full flex justify-between'>
+          <div className="w-full flex justify-between">
             <div className="w-[98%] text-lg">
               <span className="w-5 h-5 p-1 mr-2 rounded-full bg-teal-500 text-xs text-white cursor-pointer select-none">
                 <Icon icon_={faUser} />
@@ -253,8 +255,8 @@ const Comments: React.FC<CommentsProps> = ({ forum, setDatas }) => {
               @{f.author}
             </div>
 
-            <div className='w-[2%] h-7 bg-rose-500 rounded-md text-center cursor-pointer' onClick={() => deleteComment(f._id)}>
-              <Icon icon_={faTrash} className='text-white mt-2 text-xs' />
+            <div className="w-[2%] h-7 bg-rose-500 rounded-md text-center cursor-pointer" onClick={() => deleteComment(f._id)}>
+              <Icon icon_={faTrash} className="text-white mt-2 text-xs" />
             </div>
           </div>
 

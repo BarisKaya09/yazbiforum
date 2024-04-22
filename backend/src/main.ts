@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import { bgRedAndGreenText } from "./utils";
 import router from "./router/index";
 import cookieParser from "cookie-parser";
+import response from "./lib/response";
+import { status_codes } from "./types";
 
 dotenv.config({ path: ".env" });
 
@@ -37,7 +39,7 @@ app.use((req, res, next) => {
 app.use("/api", router);
 
 app.get("/", async (req: express.Request, res: express.Response) => {
-  res.status(200).json({ success: true, message: "merhaba, dünya" });
+  response(res).success(status_codes.OK, "merhaba, dünya");
 });
 
 app.listen(port, () => {

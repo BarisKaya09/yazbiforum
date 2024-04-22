@@ -1,8 +1,7 @@
 import express from "express";
-import { anyError } from "../utils";
-import { type RegisterBody } from "./auth";
-import { err_codes } from "../types";
+import { status_codes } from "../types";
 import { MongoDBUserRepository } from "../repository/mongodb";
+import response, { ANY_ERR, FORUM_NOT_EXIST, MISSING_CONTENT, USER_NOT_EXIST } from "../lib/response";
 
 export const getAllInteractions: express.Handler = async (req: express.Request, res: express.Response) => {
   const nickname = req.cookies.nickname;
@@ -10,7 +9,7 @@ export const getAllInteractions: express.Handler = async (req: express.Request, 
   try {
     const user = await userRepo.findOne({ nickname });
     if (!user) {
-      res.status(402).json({ success: false, data: { error: { message: "Kullanıcı bulunamadı!", code: err_codes.USER_NOT_EXIST } } });
+      response(res).unsuccess(status_codes.NOT_FOUND, USER_NOT_EXIST());
       return;
     }
 
@@ -34,9 +33,9 @@ export const getAllInteractions: express.Handler = async (req: express.Request, 
       index++;
     }
 
-    res.status(200).json({ success: true, data: user.interactions });
+    response(res).success(status_codes.OK, user.interactions);
   } catch (err: any) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
@@ -47,7 +46,7 @@ export const deleteComment: express.Handler = async (req: express.Request, res: 
   const nickname: string = req.cookies.nickname;
 
   if (!forumId || !author || !commentId) {
-    res.status(402).json({ success: false, data: { error: { message: "Eksik bilgi gönderildi!", code: err_codes.MISSING_CONTENT } } });
+    response(res).unsuccess(status_codes.BAD_REQUEST, MISSING_CONTENT());
     return;
   }
 
@@ -55,21 +54,22 @@ export const deleteComment: express.Handler = async (req: express.Request, res: 
   try {
     const forumOwner = await userRepo.findOne({ nickname: author });
     if (!forumOwner) {
-      res.status(402).json({ success: false, data: { error: { message: "Kullanıcı bulunamadı!", code: err_codes.USER_NOT_EXIST } } });
+      response(res).unsuccess(status_codes.NOT_FOUND, USER_NOT_EXIST("Forumun ait olduğu kullanıcı bulunamadı!"));
       return;
     }
-    // update comment
     //! hatalı
     let forum = forumOwner.forums.find((forum) => forum._id == forumId);
-    if (forum) {
-      forum.comments = forum.comments.filter((comment) => comment._id != commentId);
-      await userRepo.updateOne({ nickname: forumOwner.nickname }, { $set: { forums: [...forumOwner.forums.filter((forum) => forum._id != forumId), forum] } });
+    if (!forum) {
+      response(res).unsuccess(status_codes.NOT_FOUND, FORUM_NOT_EXIST(forumId));
+      return;
     }
+    forum.comments = forum.comments.filter((comment) => comment._id != commentId);
+    await userRepo.updateOne({ nickname: forumOwner.nickname }, { $set: { forums: [...forumOwner.forums.filter((forum) => forum._id != forumId), forum] } });
 
     // update commentOwner interactions
     const commentOwner = await userRepo.findOne({ nickname });
     if (!commentOwner) {
-      res.status(402).json({ success: false, data: { error: { message: "Kullanıcı bulunamadı!", code: err_codes.USER_NOT_EXIST } } });
+      response(res).unsuccess(status_codes.NOT_FOUND, USER_NOT_EXIST("Yorumu yapan kullanıcı bulunamadı!"));
       return;
     }
     const commentOwnerNewCommentedInteractions = commentOwner.interactions.commented.filter((c) => c.comment._id != commentId);
@@ -81,9 +81,9 @@ export const deleteComment: express.Handler = async (req: express.Request, res: 
         },
       }
     );
-    res.status(200).json({ success: true, data: "Yorum silindir." });
+    response(res).success(status_codes.OK, "Yorum silindi.");
   } catch (err: any) {
-    res.status(402).json(anyError(err));
+    response(res).unsuccess(status_codes.INTERNAL_SERVER_ERROR, ANY_ERR(err));
   } finally {
     await userRepo.close();
   }
